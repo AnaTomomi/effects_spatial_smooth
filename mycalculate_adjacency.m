@@ -5,9 +5,9 @@ clc
 
 %List the subjects:
 %folder='/m/cs/scratch/networks/data/ABIDE_II/Preprocessed/Non_Smoothed-HarvardOxford/NYU_I';
-folder='/m/cs/scratch/networks/data/ABIDE_II/Inverse';
+folder='/m/cs/scratch/networks/data/ABIDE_II/Forward';
 d= dir(folder);
-d = d(3:(end-4));
+d = d(3:(end-1));%d(3:(end-4));
 %threshold=[10]; %25 50 75];
 
 site_d=dir([folder,'/',d(1).name]);
