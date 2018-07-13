@@ -9,7 +9,7 @@ clear all
 clc
 addpath(genpath('/m/cs/scratch/networks/trianaa1/bramila'));
         
-folder='/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_II';
+folder='/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/USM_I';
 d= dir([folder '/*']);
 d = d(3:end);
 for i=1:(length(d))
