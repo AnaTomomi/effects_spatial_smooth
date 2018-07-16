@@ -19,7 +19,8 @@ function cfg = pick_and_save_voxel_ts(cfg)
 %roi_mask_name = cfg.roi_mask_name;
 %roi_mask_file = fullfile(group_mask_folder, roi_mask_name);
 if strcmp(cfg.pipeline,'inverse')
-    roi_mask_file = [cfg.inputfolder,'/',cfg.roi_mask_name];
+    %roi_mask_file = [cfg.inputfolder,'/',cfg.roi_mask_name]; %
+    roi_mask_file = [cfg.outputfolder,'/',cfg.roi_mask_name]; %
 else
     roi_mask_file = [cfg.roi_mask_name];
 end
