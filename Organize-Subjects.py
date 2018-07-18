@@ -2,7 +2,7 @@ import csv
 import sys
 import shutil
 
-folder='/m/cs/scratch/networks/data/ABIDE_II/Forward/'
+folder='/m/cs/scratch/networks/data/ABIDE_II/Inverse/'
 smoothing='Brainnetome_18mm/'
 matrix='Adj_NoThr.mat'
 #matrix='Adjacency_10.mat'
@@ -27,7 +27,7 @@ with open('/m/cs/scratch/networks/trianaa1/phenotypic-files/final_subjects/Age-m
             group_name='group1/'
         else:
             group_name='group2/'
-        move_to=output_folder+group_name+'Forward/'+smoothing+database+'-'+user+'-'+matrix
+        move_to=output_folder+group_name+'Inverse/'+smoothing+database+'-'+user+'-'+matrix
         shutil.move(move_from,move_to)
         #print move_from
         #print move_to
