@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-T-statistic for all links for all smoothings
+This script regress the site and framewise displacement (FD) from the ABIDE data.
+It needs the matrix of sites and FD by subject. It saves the subjects' matrices 
+in MATLAB format (.mat).
 """
 
 from __future__ import print_function
@@ -9,18 +11,11 @@ from os import listdir
 from os.path import isfile, join
 import scipy.io
 import numpy as np
-from scipy.stats import ttest_ind
 import csv
-#import matplotlib.pyplot as plt
-#from matplotlib import gridspec
-#import seaborn as sns
-from itertools import izip
 from sklearn import linear_model
-import pylab
-#Polynomial = np.polynomial.Polynomial
+import scipy.io
 
-
-def load_adj_matrix_from_mat(fname, var_name='A'): #for threshold 0 use 'A', otherwise, use 'Adj'
+def load_adj_matrix_from_mat(fname, var_name='Adj'): 
     """
     Load a correlation/adjacency matrix using .mat file format
 
@@ -75,7 +70,7 @@ def load_mat(fname, squeeze_me=False):
             raise e
     return data_dict
 
-def read_all_subjects(Smoothing, Threshold, folder_g1):
+def read_all_subjects(Smoothing, folder_g1):
     """
     Organizes adjacency matrices in a folder as part of a group.  
 
@@ -99,19 +94,19 @@ def read_all_subjects(Smoothing, Threshold, folder_g1):
     #Organize the adjacency matrices in dictionaries for group (ASD or TC), for all smoothing levels
     smooth1=dict()
     for idx,smooth in enumerate(Smoothing):
-        folder=folder_g1+Smoothing[idx]+Threshold
+        folder=folder_g1+Smoothing[idx]
         files = [f for f in listdir(folder) if isfile(join(folder, f))]
         group=dict()
         for file in files:
             fname=file
             adjMat=load_adj_matrix_from_mat(folder+fname) #this is a numpy object, so call adjMat[0,0]. 
             #Now the matrices use the python indexing
-            group[fname[:-26]]=np.arctanh(adjMat) #Fisher transform #change to -17 when working with thresholded matrices!!!!
+            group[fname[:-14]]=np.arctanh(adjMat) #Fisher transform #change to -17 when working with thresholded matrices!!!!
             #Change to -26 for Nonthresholded 
         smooth1[smooth]=group
     return smooth1
 
-def get_all_links(Smoothing,smooth1):
+def get_all_links(Smoothing,smooth1,length):
     """
     Organizes adjacency matrices in lists by links (distributions of links for the group)
 
@@ -134,13 +129,9 @@ def get_all_links(Smoothing,smooth1):
     """
     #Verified process :)
     links=[]
-    linkSmooth1=dict()
-    linkSmooth1['Non_Smoothed-HarvardOxford/']={}
-    linkSmooth1['Smoothed-6mm-HarvardOxford/']={}
-    linkSmooth1['Smoothed-8mm-HarvardOxford/']={}
-    linkSmooth1['Smoothed-12mm-HarvardOxford/']={}
-    x=range(138)
-    y=range(138)
+    linkSmooth1={key: {} for key in Smoothing}
+    x=range(length)
+    y=range(length)
     for idx,smooth in enumerate(Smoothing):
         subKeys1=smooth1[smooth].keys()
         for i in x:
@@ -155,6 +146,7 @@ def get_regressionMat(filepath,subKeys):
     """
     Read the regression matrices (.csv format) and order the subjects according 
     to the keys order used to order the links in python (get_all_links)
+    The .csv file should not have column names.
 
     Parameters
     ----------
@@ -199,8 +191,8 @@ def get_regressionMat(filepath,subKeys):
 
 def regress_link(Smoothing,linkSmooth1,linkSmooth2,regMat1,regMat2):
     """
-    Read the regression matrices (.csv format) and order the subjects according 
-    to the keys order used to order the links in python (get_all_links)
+    Regress the site and FD effect from the data (links). The regression matrix 
+    X has already been ordered by the function get_regressionMat. 
 
     Parameters
     ----------
@@ -209,6 +201,8 @@ def regress_link(Smoothing,linkSmooth1,linkSmooth2,regMat1,regMat2):
     linkSmooth1, linkSmooth2 : dict
         a dictionary of dictionaries with the Smoothing level as keys, 
         and links as sencond keys. The list of links as values
+    regMat1,regMat2: array
+        array of the regression matrices
 
     Returns
     -------
@@ -216,21 +210,9 @@ def regress_link(Smoothing,linkSmooth1,linkSmooth2,regMat1,regMat2):
         a dictionary of dictionaries with the Smoothing level as keys, 
         and links as sencond keys. The regressed links lists as values 
     """
-    regressed_links=dict()
-    link_dist1=dict()
-    link_dist2=dict() 
-    regressed_links['Non_Smoothed-HarvardOxford/']={}
-    regressed_links['Smoothed-6mm-HarvardOxford/']={}
-    regressed_links['Smoothed-8mm-HarvardOxford/']={}
-    regressed_links['Smoothed-12mm-HarvardOxford/']={}
-    link_dist1['Non_Smoothed-HarvardOxford/']={}
-    link_dist1['Smoothed-6mm-HarvardOxford/']={}
-    link_dist1['Smoothed-8mm-HarvardOxford/']={}
-    link_dist1['Smoothed-12mm-HarvardOxford/']={}
-    link_dist2['Non_Smoothed-HarvardOxford/']={}
-    link_dist2['Smoothed-6mm-HarvardOxford/']={}
-    link_dist2['Smoothed-8mm-HarvardOxford/']={}
-    link_dist2['Smoothed-12mm-HarvardOxford/']={}
+    regressed_links={key: {} for key in Smoothing}
+    link_dist1={key: {} for key in Smoothing}
+    link_dist2={key: {} for key in Smoothing}
     
     for idx,smooth in enumerate(Smoothing):
         gKeys=linkSmooth1[smooth].keys() 
@@ -245,12 +227,13 @@ def regress_link(Smoothing,linkSmooth1,linkSmooth2,regMat1,regMat2):
     for idx,smooth in enumerate(Smoothing):
         gKeys=regressed_links[smooth].keys()
         for key in gKeys:
-            link_dist1[smooth][key]=regressed_links[smooth][key][0:33]
-            link_dist2[smooth][key]=regressed_links[smooth][key][33:66]
+            size=len(regressed_links[smooth][key])
+            link_dist1[smooth][key]=regressed_links[smooth][key][0:(size/2)]
+            link_dist2[smooth][key]=regressed_links[smooth][key][size/2:size]
         
     return link_dist1,link_dist2
 
-def links_to_Mat(Smoothing,link_dist):
+def links_to_Mat(Smoothing,link_dist,length,subKeys):
     """
     Organize a list of links in Matrix form
 
@@ -258,80 +241,73 @@ def links_to_Mat(Smoothing,link_dist):
     ----------
     Smoothing : list 
         a list of Smoothing levels, usually the same folder names used to store the smoothing levels    
-    link_dist1 : dict
+    link_dist : dict
         a dictionary of dictionaries with the Smoothing level as keys, 
-        and links as sencond keys. The actual values of link weights as values 
+        and links as sencond keys. The values of link weights as values 
+    length : 
+        number of ROIs
+    subKeys : list
+        list of subjects in the order of how the links are stored in the list (get_all_links)
 
     Returns
     -------
     regSmooth : dict
-        a dictionary of arrays with the Smoothing level as keys, and the ordered,
-        symmetric T-statistics per link as values. 
+        a dictionary of arrays with the Smoothing level as first keys, and subjects as second keys. 
+        Regressed matrices are the values.
     """
     #Verified process :)
-    regSmooth=dict()
-    regSmooth['Non_Smoothed-HarvardOxford/']={}
-    regSmooth['Smoothed-6mm-HarvardOxford/']={}
-    regSmooth['Smoothed-8mm-HarvardOxford/']={}
-    regSmooth['Smoothed-12mm-HarvardOxford/']={}
+    
+    regSmooth={key: {} for key in Smoothing}
+    #subjects=smooth1[Smoothing[1]].keys()
     for idx,smooth in enumerate(Smoothing):
         linkKeys=link_dist[smooth].keys()
-        regSmooth[smooth]=np.zeros([138,138])
-        for link in linkKeys:
-            i=int(link.split("_")[1])
-            j=int(link.split("_")[2])
-            regSmooth[smooth][i][j]=link_dist[smooth][link]
-        inds = np.triu_indices_from(regSmooth[smooth],k=1)
-        regSmooth[smooth][(inds[1], inds[0])] = regSmooth[smooth][inds]
-        np.fill_diagonal(regSmooth[smooth], 0)
+        regSmooth[smooth]={key: {} for key in subKeys} #changes order in keys with respect to subKeys
+        for idx,subject in enumerate(subKeys):
+            regSmooth[smooth][subject]=np.zeros([length,length])
+            for link in linkKeys:
+                i=int(link.split("_")[1])
+                j=int(link.split("_")[2])
+                regSmooth[smooth][subject][i][j]=link_dist[smooth][link][idx]
+                
+        #inds = np.triu_indices_from(regSmooth[smooth],k=1)
+        #regSmooth[smooth][(inds[1], inds[0])] = regSmooth[smooth][inds]
+        #np.fill_diagonal(regSmooth[smooth], 0)
 
     return regSmooth
     
 if __name__ == "__main__":
-    #state all folders needed
-    folder_g1='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/'#ASD
-    folder_g2='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/'#TC
-    Smoothing=['Non_Smoothed-HarvardOxford/','Smoothed-6mm-HarvardOxford/','Smoothed-8mm-HarvardOxford/','Smoothed-12mm-HarvardOxford/']
-    Threshold='Thr0/'#'Thr0/'#Thr10 Thr25 Thr50 Thr75
-    length=138
+    #state all folders and configurations needed
+    folder_g1='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/Forward/'#ASD
+    folder_g2='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/Forward/'#TC
+    filepath_g1='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/regress.csv' #Filepath for the regression matrix file 
+    filepath_g2='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/regress.csv'
+    suffix='-Adj_NoThr_reg'
     
-    smooth1=read_all_subjects(Smoothing, Threshold, folder_g1) #Read all subjetcs for a group:ASD  
-    linkSmooth1,subKeys1=get_all_links(Smoothing,smooth1)#Organize info by links
-    filepath='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/regress.csv' #Filepath for the regression matrix file 
-    regMat1=get_regressionMat(filepath,subKeys1)#Order the regression matrix according to how python is reading the files
+    Smoothing=['0','4','6','8','10','12','14','16','18']
+    Smoothing=['Brainnetome_'+s+'mm/' for s in Smoothing]
+    length=246 #number of ROIs
     
-    smooth2=read_all_subjects(Smoothing, Threshold, folder_g2)    
-    linkSmooth2,subKeys2=get_all_links(Smoothing,smooth2)  
-    filepath='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/regress.csv'
-    regMat2=get_regressionMat(filepath,subKeys2)
+    #Run the computations for both groups
+    smooth1=read_all_subjects(Smoothing, folder_g1) #Read all subjetcs for a group:ASD  
+    linkSmooth1,subKeys1=get_all_links(Smoothing,smooth1,length) #Organize info by links
+    regMat1=get_regressionMat(filepath_g1,subKeys1)#Order the regression matrix according to how python is reading the files
+    
+    smooth2=read_all_subjects(Smoothing, folder_g2)    
+    linkSmooth2,subKeys2=get_all_links(Smoothing,smooth2,length)  
+    regMat2=get_regressionMat(filepath_g2,subKeys2)
     
     #Regress all the links for all the smoothing levels
     link_dist1,link_dist2=regress_link(Smoothing,linkSmooth1,linkSmooth2,regMat1,regMat2)
- 
-    #Read the ROI names
-    ROInames=[]    
-    with open('/m/cs/scratch/networks/trianaa1/Atlas/ROI_names.csv', 'rb') as csv_file:
-        reader = csv.reader(csv_file)
-        for row in reader:
-            ROInames.append(row[0])
-    #Assign "human readable ROIs"
-    nodes1=[]
-    nodes2=[]
-    element=np.arange(len(keys))
-    for i in element:
-        separated=keys[i].split('_')
-        nodes1.append(int(separated[1]))
-        nodes2.append(int(separated[2]))
+    regSmooth1=links_to_Mat(Smoothing,link_dist1,length,subKeys1)
+    regSmooth2=links_to_Mat(Smoothing,link_dist2,length,subKeys2)
     
-    nodes1_names=[]
-    nodes2_names=[]
-    for i in element:
-        nodes1_names.append(ROInames[nodes1[i]])
-        nodes2_names.append(ROInames[nodes2[i]])
+    #save regressed matrices
+    for smooth in Smoothing:
+        subjects=regSmooth1[smooth].keys()
+        for idx,subject in enumerate(subjects):
+            scipy.io.savemat(folder_g1+smooth+'/'+subject+suffix,{'Adj':regSmooth1[smooth][subject]})
     
-    #Write the results to csv file
-    with open('/m/cs/scratch/networks/trianaa1/ROIs_regressed.csv', 'wb') as f:
-        writer = csv.writer(f)
-        maxi=len(nodes1)
-        mini=maxi-95
-        writer.writerows(izip(nodes1[mini:maxi],nodes1_names[mini:maxi],nodes2[mini:maxi],nodes2_names[mini:maxi],values[mini:maxi],p_values[mini:maxi]))
+    for smooth in Smoothing:
+        subjects=regSmooth2[smooth].keys()
+        for idx,subject in enumerate(subjects):
+            scipy.io.savemat(folder_g2+smooth+'/'+subject+suffix,{'Adj':regSmooth2[smooth][subject]})
