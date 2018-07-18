@@ -11,12 +11,20 @@ clear all
 close all
 
 %Define subject folder
-folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/Brainnetome_0mm/';
+folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/Forward/Brainnetome_0mm/';
 %Define folder containing the FD matrices
 folder2='/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/';
+%Define saving path
+write_path='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/regress.csv';
+%Define language for regression
+config='python'; %options: 'matlab', 'python'
+
 d=dir(folder);
 d=d(3:end);
-%Define the sites
+
+
+
+%Define the sites 
 ETH=zeros(length(d),1);
 TCD=zeros(length(d),1);
 USM=zeros(length(d),1);
@@ -44,5 +52,10 @@ for i=1:length(d)
     end
 end
 
-T=table([Subjects],[MeanFD],[ETH],[TCD],[USM],[NYU],[intercept]);
-writetable(T,'/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/regress.csv')
+if strcmp(config,'matlab')
+    T=table([Subjects],[ETH],[TCD],[USM],[NYU],[MeanFD],[intercept]);
+else
+    T=table([Subjects],[ETH],[TCD],[USM],[NYU],[MeanFD]);
+end
+
+writetable(T,write_path)
