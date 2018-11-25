@@ -28,22 +28,23 @@ end
 fprintf('Starting voxel picking, roi mask file: %s\n', roi_mask_file);
 
 load(roi_mask_file);
-group_roi = rois;
+group_roi = rois; %rois_bra;
 [x, y, z, t] = size(cfg.vol);
 slice_size = x*y*z;
 
-if strcmp(cfg.adjacency_rois{1}, 'all')
-    rois_to_use = {};
-    for i = 1:1:max(size(group_roi))
-        if strcmp(cfg.pipeline,'inverse')
-            rois_to_use{i} = group_roi(i).labels;
-        else
-            rois_to_use{i} = group_roi(i).label;
-        end
-    within_roi_adjmats = cell(length(rois_to_use) + 2, 1);
+rois_to_use = {};
+for i = 1:1:max(size(group_roi))
+    if strcmp(cfg.pipeline,'inverse')
+        rois_to_use{i} = group_roi(i).labels;
+    else
+        rois_to_use{i} = group_roi(i).label;
     end
+%within_roi_adjmats = cell(length(rois_to_use) + 2, 1);
+end
+if strcmp(cfg.adjacency_rois{1}, 'all')
+    rois_to_use=rois_to_use;
 else
-    rois_to_use = cfg.adjacency_rois;
+    rois_to_use(cfg.excluded_rois)=[];
 end
 
 roi_indices = zeros(size(rois_to_use));
@@ -55,7 +56,7 @@ if strcmp(cfg.adjacency_rois{1}, 'all')
     roi_indices = 1:1:max(size(group_roi));
 else
     for i = 1:1:max(size(group_roi)) 
-        ind = find(strcmp(group_roi(i).labels, rois_to_use));
+        ind = find(strcmp(group_roi(i).label, rois_to_use));
         if ~ isempty(ind);
             roi_indices(ind(1)) = i;
         end

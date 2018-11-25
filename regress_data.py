@@ -70,7 +70,7 @@ def load_mat(fname, squeeze_me=False):
             raise e
     return data_dict
 
-def read_all_subjects(Smoothing, folder_g1):
+def read_all_subjects(Smoothing, folder_g1,kind):
     """
     Organizes adjacency matrices in a folder as part of a group.  
 
@@ -96,12 +96,14 @@ def read_all_subjects(Smoothing, folder_g1):
     for idx,smooth in enumerate(Smoothing):
         folder=folder_g1+Smoothing[idx]
         files = [f for f in listdir(folder) if isfile(join(folder, f))]
+        files=[x for x in files if kind in x ]
         group=dict()
         for file in files:
             fname=file
             adjMat=load_adj_matrix_from_mat(folder+fname) #this is a numpy object, so call adjMat[0,0]. 
             #Now the matrices use the python indexing
-            group[fname[:-14]]=np.arctanh(adjMat) #Fisher transform #change to -17 when working with thresholded matrices!!!!
+            group[fname[:-21]]=np.arctanh(adjMat) #normally -14
+            #Fisher transform #change to -17 when working with thresholded matrices!!!!
             #Change to -26 for Nonthresholded 
         smooth1[smooth]=group
     return smooth1
@@ -281,18 +283,19 @@ if __name__ == "__main__":
     folder_g2='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/Forward/'#TC
     filepath_g1='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/regress.csv' #Filepath for the regression matrix file 
     filepath_g2='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/regress.csv'
-    suffix='-Adj_NoThr_reg'
+    suffix='-Adj_NoThr_sphere_reg'
+    kind='_sphere.mat' # '_NoThr.mat', '_NoThr_reg.mat', or '_sphere.mat'
     
     Smoothing=['0','4','6','8','10','12','14','16','18']
     Smoothing=['Brainnetome_'+s+'mm/' for s in Smoothing]
     length=246 #number of ROIs
     
     #Run the computations for both groups
-    smooth1=read_all_subjects(Smoothing, folder_g1) #Read all subjetcs for a group:ASD  
+    smooth1=read_all_subjects(Smoothing, folder_g1,kind) #Read all subjetcs for a group:ASD  
     linkSmooth1,subKeys1=get_all_links(Smoothing,smooth1,length) #Organize info by links
     regMat1=get_regressionMat(filepath_g1,subKeys1)#Order the regression matrix according to how python is reading the files
     
-    smooth2=read_all_subjects(Smoothing, folder_g2)    
+    smooth2=read_all_subjects(Smoothing, folder_g2,kind)    
     linkSmooth2,subKeys2=get_all_links(Smoothing,smooth2,length)  
     regMat2=get_regressionMat(filepath_g2,subKeys2)
     

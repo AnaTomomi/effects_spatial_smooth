@@ -8,8 +8,9 @@ clear cfg
 clear all
 clc
 addpath(genpath('/m/cs/scratch/networks/trianaa1/bramila'));
+addpath(genpath('/m/cs/scratch/networks/trianaa1/Paper1/smoothing-group'));
         
-folder='/m/cs/scratch/networks/data/ABIDE_II/Inverse/Brainnetome_18mm/USM_I';
+folder='/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_50mm/TCD_II';
 d= dir([folder '/*']);
 d = d(3:end);
 for i=1:(length(d))
@@ -20,22 +21,23 @@ end
 %Its purpose is to prevent an error from the parhandle_bramila function in
 %the forward case, and to set the folder in which the roi_maks are for the inverse case 
 for i=1:(length(d))
-    subjects_out{i} = sprintf('/m/cs/scratch/networks/data/ABIDE_II/Inverse/Brainnetome_0mm/USM_I/%s',d(i).name);
+    subjects_out{i} = sprintf('/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_50mm/TCD_II/ROI/%s',d(i).name);
 end   
 
 cfg.inputfile = '/epi_preprocessed'; %generic name of the file to be used (usually the output from preprocessing)
-%cfg.roi_mask_names = {'/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-Brainnetome_0mm-0-2mm_with_subcortl_and_cerebellum.mat'};
-cfg.roi_mask_names = {'roi_maps.mat'};% roi mask for inverse registration 
+cfg.roi_mask_names = {'/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-Brainnetome_0mm-0-2mm_with_subcortl_and_cerebellum_correctedMNI.mat'};
+%cfg.roi_mask_names = {'roi_maps.mat'};% roi mask for inverse registration 
 %cfg.grey_matter_mask_names = {'group_grey_matter_mask-30-4mm.mat'}; %ready-made masks used to calculate adjacency matrices
 
 % ROIs for which the adjacency matrix will be calculated
-cfg.adjacency_rois = {'all'};
+cfg.adjacency_rois = {'all'};%{'all'};
+%cfg.excluded_rois = [237];
 
 cfg_par = bramila_parhandle(cfg,subjects,subjects_out); % reslices the cfg so that it can be used in parfor loop
 for i = 1:length(subjects)
     cfg = cfg_par{i};
     subj = cfg.inputfolder; disp(['Data: ' subj]);
-    cfg.pipeline='inverse'; %options: 'forward', 'inverse'
+    cfg.pipeline='forward'; %options: 'forward', 'inverse'
     %cfg.grey_matter_mask_name = cfg.grey_matter_mask_names{1};
     cfg.roi_mask_name = cfg.roi_mask_names{1};
     input_path = [subj, cfg.inputfile, '.nii'];

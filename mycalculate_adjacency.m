@@ -5,9 +5,9 @@ clc
 
 %List the subjects:
 %folder='/m/cs/scratch/networks/data/ABIDE_II/Preprocessed/Non_Smoothed-HarvardOxford/NYU_I';
-folder='/m/cs/scratch/networks/data/ABIDE_II/Inverse';
+folder='/m/cs/scratch/networks/data/ABIDE_II/Forward';
 d= dir(folder);
-d = d(3:(end-4));%d(3:(end-4));
+d = d(3:(end-1));%d(3:(end-4));
 %threshold=[10]; %25 50 75];
 
 site_d=dir([folder,'/',d(1).name]);
@@ -27,11 +27,12 @@ for sub=1:length(d)
             [row ~]=find(rois==0);
             row=unique(row);
             if ~isempty(row)
+                disp(sprintf('empty ROIs in %s/%s/%s/%s',folder,d(sub).name,site_d(site).name,subject_d(subject).name))
                 rois(row,:)=[];
             end
             
             %load the FD diagnostics matrix
-            load(sprintf('%s/%s/%s/%s/bramila/diagnostics.mat',folder,d(sub).name,site_d(site).name,subject_d(subject).name))
+            load(sprintf('%s/%s/%s/%s/bramila/diagnostics.mat',folder,d(sub).name,site_d(site).name,subject_d(subject).name)) 
             clear CSF; clear csfIDs, clear DV; clear GM; clear gmIDs; clear SD; 
             clear WM; clear wmIDs; clear GS; clear gsIDs;
 
