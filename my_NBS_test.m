@@ -14,6 +14,9 @@ test='F-test';
 N = 246; %number of ROIs
 thres='16'; %Do NOT change!!!!
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %Data format
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Configure the folders and files
 folder1=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/%s/Brainnetome_%smm',pipeline,smoothing);
 folder2=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/%s/Brainnetome_%smm',pipeline,smoothing);
@@ -66,17 +69,15 @@ end
 save(data_path,'data')
 data= data_path;
 
-%design_g1=csvread('/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/regress.csv',0,1);
-%design_g2=csvread('/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/regress.csv',0,1);
-%design_g=vertcat(design_g1,design_g2);
-%design1=zeros(66,1); design1(1:2:(2*subjectNum_per_group),1)=1;
-%design_mat=[design_g design1];
 design1=zeros(66,1); design1(1:subjectNum_per_group,1)=ones(subjectNum_per_group,1);
 design2=zeros(66,1); design2(subjectNum_per_group+1:end,1)=ones(subjectNum_per_group,1);
 design_mat=[design1 design2];
-%design_mat=zeros(66,1); design_mat(1:33,1)=ones(33,1);
 save(design_path,'design_mat')
 design_mat=design_path;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %Struct set-up
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Config the structure for the NBS 
 
@@ -93,6 +94,9 @@ UI.matrices.ui=data; %matrix with all the subjects
 UI.node_coor.ui=''; %coordinates in MNI space                         
 UI.node_label.ui=labels; %labels of Brainnetome
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %Run NBS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %To see why F-test, please see https://www.nitrc.org/forum/forum.php?thread_id=9008&forum_id=3444
 %% Run the NBS Toolbox
 
