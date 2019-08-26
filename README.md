@@ -45,7 +45,7 @@ If you want to run the analysis with spheres of fixed radios as ROIs, you need t
 - run_slurm_permutations.sh
 - my_NBS_test.m
 
-The main file is my_NBS_test.m, which runs the Networks-based statistic for comparing two groups at a level of smoothing. Check the paths and run it.
+The main file is my_NBS_test.m, which runs the Networks-based statistic for comparing two groups at a level of smoothing. Check the paths and run it. This will create an excel file with the results. 
 If you want to run the analysis for the thresholded networks, then you need to modify the file my_slurm_permutations.m with the right paths and run the file run_slurm_permutations.sh
 
 ## Visualization
@@ -54,11 +54,12 @@ If you want to run the analysis for the thresholded networks, then you need to m
 - mycheck_netproperties.m
 - distance.m
 - my_aurora.m
-- mycheck_netproperties.m
 - my_net_analysis.m
 - my_spearman.m
 - my_thesholdanalysis.m
 
+Each file has different visualizations based on the excel file created by the scripts in the analysis part. Since some of the analysis implied assigning the Brainnetome areas to the systems found by Power et. al (2012), the script for that is also included. 
+Additionally, the principal visualization is done in circos (http://circos.ca), so the folder with the scripts is also included. This circos visualization is based on the tutorial #19 found in the circos webpage. 
 
 ## Questions?
 If you have any questions, you may use the issue tracker of this repository or email ana.trianahoyos@aalto.fi
