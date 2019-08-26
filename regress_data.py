@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This script regress the site and framewise displacement (FD) from the ABIDE data.
 It needs the matrix of sites and FD by subject. It saves the subjects' matrices 
@@ -102,7 +101,7 @@ def read_all_subjects(Smoothing, folder_g1,kind):
             fname=file
             adjMat=load_adj_matrix_from_mat(folder+fname) #this is a numpy object, so call adjMat[0,0]. 
             #Now the matrices use the python indexing
-            group[fname[:-21]]=np.arctanh(adjMat) #normally -14
+            group[fname[:-20]]=np.arctanh(adjMat) #normally -14
             #Fisher transform #change to -17 when working with thresholded matrices!!!!
             #Change to -26 for Nonthresholded 
         smooth1[smooth]=group
@@ -282,11 +281,14 @@ if __name__ == "__main__":
     folder_g1='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/Forward/'#ASD
     folder_g2='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/Forward/'#TC
     filepath_g1='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/regress.csv' #Filepath for the regression matrix file 
+    #This regression matrix file should contain in order the following columns: subject_ID (str), belong to site I (bool)
+    #belong to site II (bool), belong to site III (bool), belong to site IV (bool), mean framewise displacement.
     filepath_g2='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/regress.csv'
-    suffix='-Adj_NoThr_sphere_reg'
-    kind='_sphere.mat' # '_NoThr.mat', '_NoThr_reg.mat', or '_sphere.mat'
+    suffix='-Adj_NoThr_voxel_reg' #name of the suffix of the files to write
+    kind='_NoThr_voxel.mat' # '_NoThr.mat', '_NoThr_reg.mat', or '_sphere.mat' suffix of the files to read
     
-    Smoothing=['0','4','6','8','10','12','14','16','18']
+    Smoothing=['4','6','8','10','12','14','16','18','20','22','24','26','28','30','32']
+    #Smoothing=['32']
     Smoothing=['Brainnetome_'+s+'mm/' for s in Smoothing]
     length=246 #number of ROIs
     

@@ -1,10 +1,24 @@
+'''
+This script is a helper file. It organizes the connectivity matrices from subjects in two folders according to their group and renames them according to their group and site. 
+1: ASD
+2: TC
+This is not required for the analysis, but rather speeds up the process of organizing files. 
+
+Parameters:
+-----------
+folder: path where the preprocessed images/folders are
+smoothing: folder according to the smoothing level. E.g. Brainnetome_32mm is the folder for data preprocessed with the Brainnetome Atlas and smoothed with FWHM=32mm
+Thr: threshold of the matrices
+output_folder: folder to where the preprocess connectivity matrix will be moved.
+
+'''
 import csv 
 import sys
 import shutil
 
-folder='/m/cs/scratch/networks/data/ABIDE_II/Inverse/'
-smoothing='Brainnetome_18mm/'
-matrix='Adj_NoThr.mat'
+folder='/m/cs/scratch/networks/data/ABIDE_II/Forward/'
+smoothing='Brainnetome_32mm/'
+matrix='Adj_NoThr_voxel.mat'
 #matrix='Adjacency_10.mat'
 Thr='Thr0/'
 output_folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/'
@@ -27,7 +41,7 @@ with open('/m/cs/scratch/networks/trianaa1/phenotypic-files/final_subjects/Age-m
             group_name='group1/'
         else:
             group_name='group2/'
-        move_to=output_folder+group_name+'Inverse/'+smoothing+database+'-'+user+'-'+matrix
+        move_to=output_folder+group_name+'Forward/'+smoothing+database+'-'+user+'-'+matrix
         shutil.move(move_from,move_to)
         #print move_from
         #print move_to

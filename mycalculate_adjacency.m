@@ -1,4 +1,11 @@
-%This script takes the ROI time series, calculates their pair-wise correlations to get the adjacency matrix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%This script takes the ROI time series, calculates their pair-wise        %
+% correlations to get the adjacency matrix                                %
+%                                                                         %
+% 27.06.2018 Created by Ana T.                                            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 clear cfg
 clear all
 clc
@@ -13,14 +20,14 @@ d = d(3:(end-1));%d(3:(end-4));
 site_d=dir([folder,'/',d(1).name]);
 site_d = site_d(3:end);
 
-
+%sub=15;
 for sub=1:length(d)
     for site=1:length(site_d)
         subject_d=dir([folder,'/',d(sub).name,'/',site_d(site).name]);
         subject_d=subject_d(3:end);
         for subject=1:length(subject_d)
             %load the data and extract the roi averages
-            load(sprintf('%s/%s/%s/%s/roi_voxel_ts_all_rois.mat',folder,d(sub).name,site_d(site).name,subject_d(subject).name))
+            load(sprintf('%s/%s/%s/%s/roi_voxel_ts_all_rois_voxel.mat',folder,d(sub).name,site_d(site).name,subject_d(subject).name))
             rois = roi_voxel_data.roi_ts;
             
             %Check if there are undefined regions and delete them if there are
@@ -32,7 +39,7 @@ for sub=1:length(d)
             end
             
             %load the FD diagnostics matrix
-            load(sprintf('%s/%s/%s/%s/bramila/diagnostics.mat',folder,d(sub).name,site_d(site).name,subject_d(subject).name)) 
+            load(sprintf('%s/%s/%s/%s/bramila/diagnostics.mat',folder,d(1).name,site_d(site).name,subject_d(subject).name)) %changeme
             clear CSF; clear csfIDs, clear DV; clear GM; clear gmIDs; clear SD; 
             clear WM; clear wmIDs; clear GS; clear gsIDs;
 
@@ -112,7 +119,7 @@ for sub=1:length(d)
                 end
 
                 %save the adjacency matrix without thresholding 
-                save(sprintf('%s/%s/%s/%s/Adj_%s.mat',folder,d(sub).name,site_d(site).name,subject_d(subject).name,'NoThr'),'Adj')
+                save(sprintf('%s/%s/%s/%s/Adj_%s.mat',folder,d(sub).name,site_d(site).name,subject_d(subject).name,'NoThr_voxel'),'Adj')
                 sprintf('%s/%s/%s/%s/',folder,d(sub).name,site_d(site).name,subject_d(subject).name)
     
 %     %threshold at some percentage of the matrix

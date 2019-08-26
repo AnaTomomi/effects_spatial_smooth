@@ -10,6 +10,7 @@
 % sizes (in voxels). Time series belonging to a ROI are between onset and
 % onset + size.
 % Created by Onerva Korhonen 2014-10-16
+% Modified by Ana Triana 2019-08-22
 
 function cfg = pick_and_save_voxel_ts(cfg)
 
@@ -28,7 +29,7 @@ end
 fprintf('Starting voxel picking, roi mask file: %s\n', roi_mask_file);
 
 load(roi_mask_file);
-group_roi = rois; %rois_bra;
+group_roi = rois; %rois_bra or rois; This depends on the structure name of the roi_mask_file
 [x, y, z, t] = size(cfg.vol);
 slice_size = x*y*z;
 
@@ -111,11 +112,11 @@ roi_voxel_data.roi_ts = roi_ts;
 roi_voxel_data.roi_voxel_ts = roi_voxel_ts;
 
 if strcmp(cfg.adjacency_rois{1}, 'all')
-    roi_voxel_ts_info_name = ['roi_voxel_ts_all_rois_info.mat'];
-    roi_voxel_ts_name = ['roi_voxel_ts_all_rois.mat'];
+    roi_voxel_ts_info_name = ['roi_voxel_ts_all_rois_voxel_info.mat'];%roi_voxel_ts_info_name = ['roi_voxel_ts_all_rois_info.mat'];
+    roi_voxel_ts_name = ['roi_voxel_ts_all_rois_voxel.mat'];%roi_voxel_ts_name = ['roi_voxel_ts_all_rois.mat'];
 else
-    roi_voxel_ts_info_name = ['roi_voxel_ts_info.mat'];
-    roi_voxel_ts_name = ['roi_voxel_ts.mat'];
+    roi_voxel_ts_info_name = ['roi_voxel_ts_voxel_info.mat'];%roi_voxel_ts_info_name = ['roi_voxel_ts_info.mat'];
+    roi_voxel_ts_name = ['roi_voxel_ts_voxel.mat'];%roi_voxel_ts_name = ['roi_voxel_ts.mat'];
 end
 
 roi_voxel_ts_path = fullfile([cfg.inputfolder], roi_voxel_ts_name);
