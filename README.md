@@ -13,6 +13,7 @@ You will need some functions from BraMila, which is available here; https://vers
 ### Files
 - calculate_roimaps.m
 - MFD_calculation.m
+- ForwardBramilaQC.m
 - my_bramila_makeRoiStruct.m
 - mycalculate_adjacency.m
 - my_correct_origin.m
@@ -25,8 +26,15 @@ You will need some functions from BraMila, which is available here; https://vers
 - regress_data.py
 
 ### How to?
-To preprocess the files, you need to have two files for each subject: rs-fMRI (EPI.nii) and the brain extracted image (bet.nii).
-You also
+To preprocess the files, you need to have two files for each subject: rs-fMRI (EPI.nii) and the brain extracted image (bet.nii). You also need the BraMila toolbox. 
+1. Choose the Atlas you want to use to create the ROIs. For the paper, we chose the Brainnetome Atlas. Run the file my_create_HOroimask.m file 
+2. Change the paths and run the Bramila preprocessor with the same parameters as the ones stated in the paper.  
+3. Check the quality of the preprocessing. The script ForwardBramilaQC.m could be helpful.
+4. Create the group masks by running my_make_ind_mask.m (start_from_epi)
+5. Average the ROI time-series. You may use the script pick_and_save_voxel_ts_wrapper.m for this purpose.
+6. Create the adjacency matrices using the script mycalculate_adjacency.m
+
+If you want to run the analysis with spheres of fixed radios as ROIs, you need to create the spheres first. The script mymake_sphere.m creates such spheres and the script my_correct_origin.m helps to translate the coordinates to the right format. 
 
 ## Analysis
 ### Files
