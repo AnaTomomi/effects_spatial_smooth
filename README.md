@@ -33,16 +33,20 @@ To preprocess the files, you need to have two files for each subject: rs-fMRI (E
 4. Create the group masks by running my_make_ind_mask.m (start_from_epi)
 5. Average the ROI time-series. You may use the script pick_and_save_voxel_ts_wrapper.m for this purpose.
 6. Create the adjacency matrices using the script mycalculate_adjacency.m
+7. Regress possible effects due to the place where the subjects were scanned and their mean framewise displacement (MFD). The MFD is calculated with the script MFD_calculation.m.
+8. Organize the subjects according to the groups where each belongs. The script Organize-Subjects.py will help with that. 
 
 If you want to run the analysis with spheres of fixed radios as ROIs, you need to create the spheres first. The script mymake_sphere.m creates such spheres and the script my_correct_origin.m helps to translate the coordinates to the right format. 
 
 ## Analysis
 ### Files
 - bramila_ttest2_np.m
-- my_run_ttest_permutations.m
-- my_run_ttest_permutations.sh
-- my_run_ttest_permutations.m
-- my_run_ttest_permutations.sh
+- my_slurm_permutations.m
+- run_slurm_permutations.sh
+- my_NBS_test.m
+
+The main file is my_NBS_test.m, which runs the Networks-based statistic for comparing two groups at a level of smoothing. Check the paths and run it.
+If you want to run the analysis for the thresholded networks, then you need to modify the file my_slurm_permutations.m with the right paths and run the file run_slurm_permutations.sh
 
 ## Visualization
 ### Files
