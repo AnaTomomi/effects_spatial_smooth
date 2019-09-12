@@ -6,6 +6,9 @@
 n=$SLURM_ARRAY_TASK_ID
 number=`sed "${n}q;d" TCD_I_list.txt`
 
+# Running this file will run the first two steps of the preprocessing stage: extract the brain and correct for MRI inhomogeneities. 
+# The file will run the process for all the files listed in the .txt file at the beginning. It will sumbit it as a batch array
+# To run the file go to the folder and run sbatch --array=1-N ./preprepro_TCS_I.sh
 
 #Input the folder in which the pre-preprocessing will be done
 folder=/m/cs/scratch/networks/data/ABIDE_II;
