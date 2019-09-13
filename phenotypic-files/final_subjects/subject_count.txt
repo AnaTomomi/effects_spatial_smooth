@@ -1,0 +1,29 @@
+Initial # of subjects after excluding sex, age, and FIQ exactly as DiMartino2014:
+
+Database	Potential	Real
+CALTECH		11		4
+CMU		 8		4
+ETH		 9		5
+NYU		11		11
+TCD_I		 8		8
+TCD_II		 5		5
+USM_I		21		17
+USM_II		 2		2
+
+Total		75		56
+
+
+
+
+Initial # of subjects after excluding sex, age, and FIQ ONLY LOWER RANGE APPLIED:
+
+CALTECH		28
+CMU		10
+ETH		 9
+NYU		13
+TCD_I		 9
+TCD_II		 5
+USM_I		27
+USM_II		 3
+
+Total		104
