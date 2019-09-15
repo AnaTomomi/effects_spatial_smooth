@@ -44,23 +44,23 @@ subjects = {
 
 %% List subjects output folders
 subjects_out = {
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050237'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050264'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050246'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050253'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050238'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050270'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050260'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050254'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050236'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0051132'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050244'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050259'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050261'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050232'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050263'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0051139'
-'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/TCD_I/0050271'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050237'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050264'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050246'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050253'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050238'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050270'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050260'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050254'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050236'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0051132'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050244'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050259'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050261'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050232'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050263'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0051139'
+'/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_6mm/TCD_I/0050271'
 };
 % subjects_out = subjects; % in case you want to store everything under the same original folder
 
@@ -80,8 +80,8 @@ cfg.do_temporal_filtering = 1;
 cfg.filtertype = 'butter'; % allowed are butter, fir, fslhp. Use fslhp if you are not doing functional connectivity. Use butter to do like in Power 2014
 
 %% Smoothing
-cfg.do_spatial_smooth = 0;
-cfg.smooth_FWHM = 0; % used in susan smoothing
+cfg.do_spatial_smooth = 1;
+cfg.smooth_FWHM = 6; % used in susan smoothing
 cfg.smooth_method = 'FSLgauss'; % 'SPM', 'AFNI', 'FSL' or 'none'
 
 %% slice number parameters, use only one, either slicenum or sliceseq
