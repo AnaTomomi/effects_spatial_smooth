@@ -26,6 +26,7 @@ for sub=1:length(d)
         subject_d=dir([folder,'/',d(sub).name,'/',site_d(site).name]);
         subject_d=subject_d(3:end);
         for subject=1:length(subject_d)
+            tic
             %load the data and extract the roi averages
             load(sprintf('%s/%s/%s/%s/roi_voxel_ts_all_rois_voxel.mat',folder,d(sub).name,site_d(site).name,subject_d(subject).name))
             rois = roi_voxel_data.roi_ts;
@@ -119,6 +120,8 @@ for sub=1:length(d)
                 end
 
                 %save the adjacency matrix without thresholding 
+                toc
+                error('stop')
                 save(sprintf('%s/%s/%s/%s/Adj_%s.mat',folder,d(sub).name,site_d(site).name,subject_d(subject).name,'NoThr_voxel'),'Adj')
                 sprintf('%s/%s/%s/%s/',folder,d(sub).name,site_d(site).name,subject_d(subject).name)
     

@@ -13,6 +13,10 @@
 % OK 2015-03-05: changed paths to point to grey matter masks where
 % hemispheres are separeted
 
+%Self-note: this file will create the masks (nii) and the mat files with
+%the centroids and the voxel maps. Before running this file I need to have
+%the Atlas as one volume only.
+
 close all, clear all
 
 %addpath(genpath('/triton/becs/scratch/braindata/shared/toolboxes/bramila/bramila'));
@@ -26,7 +30,7 @@ d= dir(folder); d = d(3:(end-4));
 site_d=dir([folder,'/',d(1).name]);
 site_d = site_d(3:end);
 
-count=1; sub=2;
+count=1; sub=1;
 smoothing=d(sub).name;
 %for sub=1:length(d)
     for site=1:length(site_d)
@@ -53,14 +57,14 @@ template = ['/m/cs/scratch/networks/trianaa1/Atlas/MNI152_T1_' res_str '_brain.n
 start_from_epi = 1; % set to 1 if you want to read individual ep masks, 0 if only create .mat files
 include_subcortex = true;
 include_cerebellum = true;
-atlas = 'brainnetome'; % which atlas to use for producing the group masks, options: 'aal', 'ho', 'brainnetome'
+atlas = 'craddock'; % which atlas to use for producing the group masks, options: 'aal', 'ho', 'brainnetome'
 
 missing_rois = [];%[120]; % indices of ROIs that are not present at the selected probability; needed to get correct labels
 %% reading individual masks, creating group mask
 
 if strcmp(atlas, 'ho')
     nii_path = [group_folder_out mask_folder '/group_mask-' num2str(TH) '-' res_str '.nii'];
-elseif strcmp(atlas, 'aal') || strcmp(atlas, 'brainnetome')
+elseif strcmp(atlas, 'aal') || strcmp(atlas, 'brainnetome') || strcmp(atlas, 'craddock')
     nii_path = [group_folder_out mask_folder '/group_mask-' smoothing '-' res_str '.nii'];
 end
 

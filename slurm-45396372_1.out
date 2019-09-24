@@ -1,7 +1,0 @@
-Next, source the init script, depending on which shell you use: 
-bash: source $FSLDIR/etc/fslconf/fsl.sh 
-tcsh: source $FSLDIR/etc/fslconf/fsl.csh 
-sed: can't read /m/cs/scratch/networks/trianaa1/scripts/CALTECH_I_list.txt: No such file or directory
-Cannot open volume ./Brainnetome_0mm/CALTECH_I//epi_preprocessed for reading!
-/m/cs/scratch/networks/data/ABIDE_II/Forward
-4/2.35

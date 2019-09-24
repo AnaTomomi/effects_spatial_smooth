@@ -4,7 +4,7 @@ clc
 
 %List the subjects:
 %folder='/m/cs/scratch/networks/data/ABIDE_II/Preprocessed/Non_Smoothed-HarvardOxford/NYU_I';
-folder='/m/cs/scratch/networks/data/ABIDE_II/Forward';
+folder='/m/cs/scratch/networks/data/COBRE/Preprocessed/0mm/';
 d= dir(folder);
 d = d(3:(end-1));
 
@@ -13,8 +13,8 @@ site_d = site_d(3:end);
 
 sub=1;
 %for sub=1:length(d)
-    site=1;
-    %for site=1:length(site_d)
+    %site=1;
+    for site=1:length(site_d)
         subject_d=dir([folder,'/',d(sub).name,'/',site_d(site).name]);
         subject_d=subject_d(3:end);
         for subject=1:length(subject_d)
@@ -49,7 +49,9 @@ sub=1;
 
         %considers only those intervals larger than 150
         doAdjacency = 0;
-        if intervals(chosenInt)>150
+        if intervals(chosenInt)>135 %sequences larger than 4.5 minutes
             doAdjacency=1;
         end
-sprintf('%s: %f',subject_d(subject).name,doAdjacency)
+        fprintf('%s_%s: %f \n',site_d(site).name,subject_d(subject).name,doAdjacency)
+        end
+    end
