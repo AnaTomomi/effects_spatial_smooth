@@ -16,10 +16,16 @@ addpath(genpath('/m/cs/scratch/networks/trianaa1/Paper1/smoothing-group'));
 d = dir('/m/cs/scratch/networks/data/ABIDE_II/Forward/*/*/*');
 d(ismember({d.name}, {'.', '..','group_mask-Brainnetome_0mm-2mm.nii','group_roi_mask-Brainnetome_0mm-0-2mm_with_subcortl_and_cerebellum.mat','group_roi_mask-Brainnetome_0mm-0-2mm_with_subcortl_and_cerebellum.nii','group_roi_mask-Brainnetome_0mm-0-2mm_with_subcortl_and_cerebellum_correctedMNI.mat'})) = [];
 
+%check if the files have been created and if yes, then skip that subject
+
 for i=1:(length(d))
-    subjects{i} = sprintf('%s/%s',d(i).folder,d(i).name);
-    %fprintf(sprintf('%s \n', subjects{i}))
+    if ~isfile(sprintf('%s/%s/roi_voxel_ts_all_rois_voxel_info.mat',d(i).folder,d(i).name))
+        subjects{i} = sprintf('%s/%s',d(i).folder,d(i).name);
+    end
 end
+
+ids=find(~cellfun(@isempty,subjects));
+subjects=subjects(ids);
         
 %This is a mock array, it is not used for writing/saving any array. 
 %Its purpose is to prevent an error from the parhandle_bramila function in
@@ -27,6 +33,8 @@ end
 for i=1:(length(d))
     subjects_out{i} = sprintf('%s/ROIs/%s',d(i).folder,d(i).name);
 end 
+
+subjects_out=subjects_out(ids);
         
 cfg.inputfile = '/epi_preprocessed'; %generic name of the file to be used (usually the output from preprocessing)
 %cfg.roi_mask_names = {'/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-Brainnetome_0mm-0-2mm_with_subcortl_and_cerebellum_correctedMNI.mat'};
