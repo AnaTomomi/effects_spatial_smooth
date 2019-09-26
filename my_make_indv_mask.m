@@ -12,6 +12,7 @@
 % run without reading epi to create .mat masks
 % OK 2015-03-05: changed paths to point to grey matter masks where
 % hemispheres are separeted
+% AT 2019-09-25: include paths to include Craddock parcellations
 
 %Self-note: this file will create the masks (nii) and the mat files with
 %the centroids and the voxel maps. Before running this file I need to have
@@ -58,14 +59,17 @@ start_from_epi = 1; % set to 1 if you want to read individual ep masks, 0 if onl
 include_subcortex = true;
 include_cerebellum = true;
 atlas = 'craddock'; % which atlas to use for producing the group masks, options: 'aal', 'ho', 'brainnetome'
+roi_number = '350'; %change to match the number of ROIs used in craddock
 
-missing_rois = [];%[120]; % indices of ROIs that are not present at the selected probability; needed to get correct labels
+missing_rois = [43 173 188 214 220 230 235 267 271 275 280 295 307 322 325 326 330 335 336 350];%[120 123]; % indices of ROIs that are not present at the selected probability; needed to get correct labels
 %% reading individual masks, creating group mask
 
 if strcmp(atlas, 'ho')
     nii_path = [group_folder_out mask_folder '/group_mask-' num2str(TH) '-' res_str '.nii'];
-elseif strcmp(atlas, 'aal') || strcmp(atlas, 'brainnetome') || strcmp(atlas, 'craddock')
+elseif strcmp(atlas, 'aal') || strcmp(atlas, 'brainnetome') 
     nii_path = [group_folder_out mask_folder '/group_mask-' smoothing '-' res_str '.nii'];
+elseif strcmp(atlas, 'craddock')
+    nii_path = [group_folder_out mask_folder '/group_mask-' atlas roi_number '-' res_str '.nii'];
 end
 
 if start_from_epi
@@ -246,6 +250,8 @@ elseif strcmp(atlas,'aal')
     roi_mask = load_nii(['AAL/aal_' res_str '.nii']);
 elseif strcmp(atlas,'brainnetome')
     roi_mask = load_nii('/m/cs/scratch/networks/trianaa1/Atlas/Brainnetome/Brainnetome/BNA-maxprob-thr0-2mm.nii');
+elseif strcmp(atlas,'craddock')
+    roi_mask = load_nii(sprintf('/m/cs/scratch/networks/trianaa1/Atlas/Craddock_random_%s.nii',roi_number));
 end
 
 roi_mask = roi_mask.img;
@@ -275,8 +281,12 @@ for i = 1:n_rois
 end
 
 if include_subcortex || strcmp(atlas, 'aal') || strcmp(atlas,'brainnetome')
-    if include_cerebellum || strcmp(atlas, 'aal') || strcmp(atlas,'brainnetome')
-        group_roi_path = [group_folder_out mask_folder '/group_roi_mask-' smoothing '-' num2str(TH) '-' res_str '_with_subcortl_and_cerebellum.nii'];
+    if include_cerebellum 
+        if strcmp(atlas, 'aal') || strcmp(atlas,'brainnetome')
+            group_roi_path = [group_folder_out mask_folder '/group_roi_mask-' smoothing '-' num2str(TH) '-' res_str '_with_subcortl_and_cerebellum.nii'];
+        elseif strcmp(atlas,'craddock')
+            group_roi_path = [group_folder_out mask_folder '/group_roi_mask-' atlas roi_number '-' num2str(TH) '-' res_str '_with_subcortl_and_cerebellum.nii'];
+        end
     else
         group_roi_path = [group_folder_out mask_folder '/group_roi_mask-' num2str(TH) '-' res_str '_with_subcortl.nii'];
     end
@@ -285,6 +295,8 @@ elseif include_cerebellum
 else
     group_roi_path = [group_folder_out mask_folder '/group_roi_mask-' num2str(TH) '-' res_str '.nii'];
 end
+
+
 
 save_nii(make_nii(group_roi, [res res res]), group_roi_path);
 
@@ -316,6 +328,8 @@ elseif strcmp(atlas,'aal')
     mask_name = ['AAL/aal_' res_str '_rois.mat'];
 elseif strcmp(atlas,'brainnetome')
     mask_name = '/m/cs/scratch/networks/trianaa1/Atlas/brainnetome_MPM_rois_2mm.mat'; %this is only used to get the labels, no use of the maps or centroids.
+elseif strcmp(atlas,'craddock')
+    mask_name = sprintf('/m/cs/scratch/networks/trianaa1/Atlas/Craddock_random_%s_rois_2mm.mat',roi_number);
 end
 
 load(mask_name);
@@ -328,8 +342,12 @@ cfg.labels=labels;
 rois = my_bramila_makeRoiStruct(cfg);
 
 if include_subcortex || strcmp(atlas, 'aal') || strcmp(atlas,'brainnetome')
-    if include_cerebellum || strcmp(atlas, 'aal')
-        mask_path = [group_folder_out mask_folder '/group_roi_mask-' smoothing '-' num2str(TH) '-' res_str '_with_subcortl_and_cerebellum'];
+    if include_cerebellum 
+        if strcmp(atlas, 'brainnetome')
+            mask_path = [group_folder_out mask_folder '/group_roi_mask-' smoothing '-' num2str(TH) '-' res_str '_with_subcortl_and_cerebellum'];
+        elseif strcmp(atlas, 'craddock')
+            mask_path = [group_folder_out mask_folder '/group_roi_mask-' atlas roi_number '-' num2str(TH) '-' res_str '_with_subcortl_and_cerebellum'];
+        end
     else
         mask_path = [group_folder_out mask_folder '/group_roi_mask-' num2str(TH) '-' res_str '_with_subcortl'];
     end
@@ -339,4 +357,7 @@ else
     mask_path = [group_folder_out mask_folder '/group_roi_mask-' num2str(TH) '-' res_str];
 end
 
+
+    
+    
 save(mask_path, 'rois');
