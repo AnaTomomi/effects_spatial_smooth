@@ -13,9 +13,10 @@ clc
 addpath(genpath('/m/cs/scratch/networks/trianaa1/bramila'));
 addpath(genpath('/m/cs/scratch/networks/trianaa1/Paper1/smoothing-group'));
 
-main_folder = '/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_32mm/';
+main_folder = '/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/';
 main_dir = dir(main_folder);
 main_dir = main_dir(3:end);
+
 
 for site=1:size(main_dir,1)
     folder=sprintf('%s%s',main_folder,main_dir(site).name);
@@ -34,7 +35,7 @@ for site=1:size(main_dir,1)
 
     cfg.inputfile = '/epi_preprocessed'; %generic name of the file to be used (usually the output from preprocessing)
     %cfg.roi_mask_names = {'/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-Brainnetome_0mm-0-2mm_with_subcortl_and_cerebellum_correctedMNI.mat'};
-    cfg.roi_mask_names = {'/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-voxel-0-2mm_with_subcortl_and_cerebellum.mat'};
+    cfg.roi_mask_names = {'/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-Brainnetome_0mm-0-2mm_with_subcortl_and_cerebellum.mat'};
     %cfg.roi_mask_names = {'roi_maps.mat'};% roi mask for inverse registration 
     %cfg.grey_matter_mask_names = {'group_grey_matter_mask-30-4mm.mat'}; %ready-made masks used to calculate adjacency matrices
 
