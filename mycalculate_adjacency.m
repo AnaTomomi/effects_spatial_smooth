@@ -3,6 +3,7 @@
 % correlations to get the adjacency matrix                                %
 %                                                                         %
 % 27.06.2018 Created by Ana T.                                            %
+% 27.09.2019 Modified by AT. Make it more efficient, include thresholds   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -11,8 +12,10 @@ clear all
 clc
 
 %Set the variable names
-name='Adj_NoThr_voxel.mat';
-parcel='roi_voxel_ts_all_rois_voxel_craddock30.mat';
+name='Adj_NoThr_Craddock350.mat';
+name2='Correlation_Craddock350.mat';
+name3='Craddock350.mat';
+parcel='roi_craddock350_ts_all_rois.mat';
 threshold=[5 7 9 10 11 13 15 17 19 20];
 
 %List the subjects
@@ -44,11 +47,14 @@ for i=1:length(subjects)
     
     %load the FD diagnostics matrix
     [filepath,~,~]=fileparts(subjects{i});
-    load(sprintf('%s/bramila/diagnostics.mat',filepath)) %changeme
+    [dummy,subject_id,~]=fileparts(filepath);
+    [dummy,site,~]=fileparts(dummy);
+    [root,smooth,~]=fileparts(dummy);
+    load(sprintf('%s/Brainnetome_0mm/%s/%s/bramila/diagnostics.mat',root,site,subject_id)) %changeme
     clear CSF; clear csfIDs, clear DV; clear GM; clear gmIDs; clear SD; 
     clear WM; clear wmIDs; clear GS; clear gsIDs;
     
-    %Look the band in which the sequence length is greater than 150 
+    %Look the band in which the sequence length is greater than 4.5 min 
     Idx=find(FD>0.5); %finds which FD is over 0.5
     
     %If there are points in which FD>0.5, the sequence is splitted because we
@@ -84,7 +90,7 @@ for i=1:length(subjects)
         else
             t_start=intervals(chosenInt-1)+1;
             t_end=intervals(chosenInt)+intervals(chosenInt-1)-1;%
-            if FD(end)<0.5 && t_end==204
+            if FD(end)<0.5 && t_end==size(FD,1)-1 %204 comes from TCD_II size of FD
                 t_end=t_end+1;
             end
             %FD=FD(t_start:t_end,1);
@@ -116,7 +122,7 @@ for i=1:length(subjects)
         %Check if the negative correlations are more than 25% and issue a warning
         ratio=100*(size(find(Adj<0),1)/(s*s));
         if ratio>25
-            fid = fopen(fullfile(folder, d(sub).name, site_d(site).name, subject_d(subject).name,'Adjacency.txt'), 'a');
+            fid = fopen(fullfile(filepath,'Adjacency.txt'), 'a');
             if fid == -1
                 error('Cannot open log file.');
             end
@@ -126,6 +132,7 @@ for i=1:length(subjects)
         
         %save the adjacency matrix without thresholding 
         save(sprintf('%s/%s',filepath,name),'Adj')
+        save(sprintf('%s/%s',filepath,name2),'C')
         sprintf('%s',filepath)
         
         
@@ -143,14 +150,11 @@ for i=1:length(subjects)
             %correlation numbers
             %Adj = Adj(ids);
 
-            save(sprintf('%s/Adj_%s.mat',filepath,num2str(threshold(j))),'Adj')
+            save(sprintf('%s/Adj_%s_%s',filepath,num2str(threshold(j)),name3),'Adj')
         end
-        
-        save(sprintf('%s/Correlation.mat',filepath),'C')
-        
-        clear roi_voxel_data
-        clear FD
-        clear rois
-   end
+    end
+    clear roi_voxel_data
+    clear FD
+    clear rois
 end
            

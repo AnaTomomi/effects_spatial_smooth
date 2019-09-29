@@ -15,37 +15,37 @@ clc
 %add required paths
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/NBS1.2'));
 
-%% configure paths
+%% set up thresholds and smoothing
 %Human inputs
-smoothing='0';%0,4,6,8,10,12,14,16,18
+smoothing='0';%[0,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32];
 
 pipeline='Forward'; %'Forward' or 'Inverse'
 test='F-test';
 N = 246; %number of ROIs
-thres='16'; %Do NOT change!!!!
+thres='2.25'; %[2.25,4,6.25,9,12.25,16,20.25,25]; %Do NOT change!!!! Range from 1.5 to 5
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %Data format
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% data format
+
 %Configure the folders and files
-folder1=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/%s/Brainnetome_%smm',pipeline,smoothing);
-folder2=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/%s/Brainnetome_%smm',pipeline,smoothing);
-savepath= sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/NBS/%s/NBS_Brainnetome_%smm_%s_Fisher_2019',pipeline,smoothing,test);
-figure_path=sprintf('/m/cs/scratch/networks/trianaa1/Paper1/Figures/%s/NBS_Brainnetome_%smm_%s_Fisher',pipeline,smoothing,test);
-data_path=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/NBS/%s/subjects.mat',pipeline);
-design_path=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/NBS/%s/design.mat',pipeline);
-excel_file='/m/cs/scratch/networks/trianaa1/Paper1/Significant_Nets_Fisher_2019.xlsx';
+folder1=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group1/Brainnetome_%smm',smoothing);
+folder2=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group2/Brainnetome_%smm',smoothing);
+savepath= sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/NBS_Brainnetome_%smm_F-test_%s_Fisher_2019',smoothing,thres);
+figure_path=sprintf('/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended/NBS_Brainnetome_%smm_F-test_%s_Fisher',smoothing,thres);
+data_path=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/subjects.mat');
+design_path=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/design.mat');
+%excel_file='/m/cs/scratch/networks/trianaa1/Paper1/Significant_Nets_Fisher_2019.xlsx';
 
 %Configure the Atlas
-labels='/m/cs/scratch/networks/data/ABIDE_II/Analysis/NBS/Forward/labels.txt';
+labels='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/labels.txt';
 centroids=[];
 %centroids='/m/cs/scratch/networks/data/ABIDE_II/Analysis/NBS/Forward/brainnetome.txt';
+
 %% Read the matrices and organize the data
 %Make a list of subjects
 group1= dir(folder1);
-group1= group1(3:end); group1= group1(2:5:end); %OJO! Needs change
+group1= group1(3:end); group1= group1(2:8:end); %OJO! Needs change
 group2= dir(folder2);
-group2= group2(3:end); group2= group2(2:5:end);
+group2= group2(3:end); group2= group2(2:8:end);
 subjectNum_per_group=length(group1);
 
 %Design vector groups that contains indices 1 and 2 for the different groups
@@ -79,8 +79,8 @@ end
 save(data_path,'data')
 data= data_path;
 
-design1=zeros(66,1); design1(1:subjectNum_per_group,1)=ones(subjectNum_per_group,1);
-design2=zeros(66,1); design2(subjectNum_per_group+1:end,1)=ones(subjectNum_per_group,1);
+design1=zeros(subNum,1); design1(1:subjectNum_per_group,1)=ones(subjectNum_per_group,1);
+design2=zeros(subNum,1); design2(subjectNum_per_group+1:end,1)=ones(subjectNum_per_group,1);
 design_mat=[design1 design2];
 save(design_path,'design_mat')
 design_mat=design_path;
@@ -116,23 +116,23 @@ global nbs
 save(savepath,'nbs')
 %saveas(gcf,figure_path,'jpg');
 %close all
-
-[~,~,raw] = xlsread(excel_file);
-init_row=size(raw,1)+1;
-if ~isempty(nbs.NBS.con_mat)
-    [i,j]=find(nbs.NBS.con_mat{1});
-    for n=1:length(i)
-        i_lab=nbs.NBS.node_label{i(n)};
-        j_lab=nbs.NBS.node_label{j(n)};
-        stat=nbs.NBS.test_stat(i(n),j(n));
-        fprintf('%s to %s. Test stat: %0.2f\n',num2str(i(n)),num2str(j(n)),stat);
-        cohen=sqrt(stat)*sqrt((subjectNum_per_group+subjectNum_per_group)/(subjectNum_per_group*subjectNum_per_group));
-        hedge=(1-(3/((4*(subjectNum_per_group+subjectNum_per_group-2))-1)))*cohen;
-        raw(init_row,:)={pipeline,smoothing,num2str(i(n)),i_lab,num2str(j(n)),j_lab,num2str(stat),cohen,hedge};
-        init_row=init_row+1;
-    end
-    raw=cell2table(raw);
-    %writetable(raw,excel_file,'WriteVariableNames',false)
-else
-    raw(init_row,:)={pipeline,smoothing,'NaN','NaN','NaN','NaN','NaN','NaN','NaN'};
-end
+% 
+% [~,~,raw] = xlsread(excel_file);
+% init_row=size(raw,1)+1;
+% if ~isempty(nbs.NBS.con_mat)
+%     [i,j]=find(nbs.NBS.con_mat{1});
+%     for n=1:length(i)
+%         i_lab=nbs.NBS.node_label{i(n)};
+%         j_lab=nbs.NBS.node_label{j(n)};
+%         stat=nbs.NBS.test_stat(i(n),j(n));
+%         fprintf('%s to %s. Test stat: %0.2f\n',num2str(i(n)),num2str(j(n)),stat);
+%         cohen=sqrt(stat)*sqrt((subjectNum_per_group+subjectNum_per_group)/(subjectNum_per_group*subjectNum_per_group));
+%         hedge=(1-(3/((4*(subjectNum_per_group+subjectNum_per_group-2))-1)))*cohen;
+%         raw(init_row,:)={pipeline,smoothing,num2str(i(n)),i_lab,num2str(j(n)),j_lab,num2str(stat),cohen,hedge};
+%         init_row=init_row+1;
+%     end
+%     raw=cell2table(raw);
+%     %writetable(raw,excel_file,'WriteVariableNames',false)
+% else
+%     raw(init_row,:)={pipeline,smoothing,'NaN','NaN','NaN','NaN','NaN','NaN','NaN'};
+% end
