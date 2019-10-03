@@ -1,3 +1,13 @@
+function my_run_ttest_permutations(idx)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This script runs permutations analysis for links only                   %
+% This script detects differences between the ASD and TC for one smoothing%
+% level at a time.                                                        %
+%                                                                         %
+% ?? Created by Ana T.                                                    %
+% 03.10.2019 Modified by Ana T. Add comments to know what it does         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %Add path to bramila tool box
 addpath(genpath('/m/nbe/scratch/braindata/shared/toolboxes/bramila'));
 addpath(genpath('/m/cs/scratch/cs-e5700-2017/hcp/brain_networks/scripts'));
@@ -5,16 +15,29 @@ addpath(genpath('/m/cs/scratch/networks/trianaa1/scripts'));
 
 %Configure ROIs
 N = 246; %number of ROIs
-smoothing='0'; %0,4,6,8,10,12,14,16,18
 pipeline='Forward'; %'Forward' or 'Inverse'
-%rois = csvread('/m/cs/scratch/cs-e5700-2017/hcp/data/unzipped/roi_labels.csv');
+
+smooth=[0,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32];
+thr=[0.05 0.07 0.09 0.10 0.11 0.13 0.15 0.17 0.19 0.20];
+
+[A,B] = meshgrid(smooth,thr);
+c=cat(2,A',B');
+comb=reshape(c,[],2);
+
+clear smoothing
+clear thres
+
+smoothing=num2str(comb(idx+1,1));
+thr=num2str(comb(idx+1,2));
+
+fprintf('Computing permutations for smooth:%s and thres:%s \n',smoothing,thr)
 
 %set the paths
-folder1= sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/%s/Brainnetome_%smm',pipeline,smoothing);
-folder2= sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/group2/%s/Brainnetome_%smm',pipeline,smoothing);
-savepath= sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/Stats/%s/stats_Brainnetome_%smm_Sphere',pipeline,smoothing);
-savefigpath= sprintf('/m/cs/scratch/networks/trianaa1/Paper1/Figures/%s',pipeline);
-excel_file=sprintf('/m/cs/scratch/networks/trianaa1/Paper1/Significant_Links_%s_Sphere.xlsx',pipeline);
+folder1= sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group1/Brainnetome_%smm',smoothing);
+folder2= sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group2/Brainnetome_%smm',smoothing);
+savepath= sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations/Brainnetome/links_%smm_%s',smoothing,strrep(thr,'.',''));
+%savefigpath= sprintf('/m/cs/scratch/networks/trianaa1/Paper1/Figures/%s',pipeline);
+excel_file=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations/Brainnetome/humanlinks_%smm_%s',smoothing,strrep(thr,'.',''));
 
 %Make a list of subjects
 group1= dir(folder1);
@@ -101,9 +124,9 @@ human_labels(1:2:end,1)=strcat(txt(:,1),'-L');
 human_labels(2:2:end,1)=strcat(txt(:,1),'-R');
 human_labels=regexprep(human_labels,',','');
 
-[~,~,raw] = xlsread(excel_file);
-init_row=size(raw,1)+1;
-
+% [~,~,raw] = xlsread(excel_file);
+% init_row=size(raw,1)+1;
+raw=[];
 indxs=find(edge_results~=0);
 for ii=1:length(indxs)
     indx = indxs(ii);
@@ -119,35 +142,36 @@ filename=excel_file;
 raw=cell2table(raw);
 writetable(raw,filename,'WriteVariableNames',false)
 
-if ~isempty(indxs)
-%Plot edge results
-sigedge = edges(:,find(tstat_msk>0));
-fig=figure;
-[f1,xi1] = ksdensity(sigedge(groups==1)); plot(xi1,f1,'r', 'LineWidth', 3);
-hold on
-[f2,xi2] = ksdensity(sigedge(groups==2)); plot(xi2,f2,'b', 'LineWidth', 3);
-xlim([0 max([xi1 xi2])])
-xlabel('Edge weight')
-title(sprintf('Edge weight distributions at %s mm', smoothing))
-legend('ASD','TC')
-saveas(fig,sprintf('%s/WeightDist_%smm_Sphere.png',savefigpath,smoothing))
-close(fig)
-
-fig=figure;
-x = sigedge(groups==1);
-y = sigedge(groups==2);
-h1 = histogram(x);
-hold on
-h2 = histogram(y);
-h1.Normalization = 'pdf';
-h1.BinWidth = 0.1;
-h2.Normalization = 'pdf';
-h2.BinWidth = 0.1;
-[f1,xi1] = ksdensity(sigedge(groups==1)); plot(xi1,f1,'b', 'LineWidth', 3);
-[f2,xi2] = ksdensity(sigedge(groups==2)); plot(xi2,f2,'r', 'LineWidth', 3);
-xlabel('Edge weight')
-title(sprintf('Edge weight distributions at %s mm', smoothing))
-legend('ASD','TC','ASD,density','TC,density')
-saveas(fig,sprintf('%s/WeightHist_%smm_Sphere.png',savefigpath,smoothing))
-close all
-end
+% if ~isempty(indxs)
+% %Plot edge results
+% sigedge = edges(:,find(tstat_msk>0));
+% fig=figure;
+% [f1,xi1] = ksdensity(sigedge(groups==1)); plot(xi1,f1,'r', 'LineWidth', 3);
+% hold on
+% [f2,xi2] = ksdensity(sigedge(groups==2)); plot(xi2,f2,'b', 'LineWidth', 3);
+% xlim([0 max([xi1 xi2])])
+% xlabel('Edge weight')
+% title(sprintf('Edge weight distributions at %s mm', smoothing))
+% legend('ASD','TC')
+% saveas(fig,sprintf('%s/WeightDist_%smm_Sphere.png',savefigpath,smoothing))
+% close(fig)
+% 
+% fig=figure;
+% x = sigedge(groups==1);
+% y = sigedge(groups==2);
+% h1 = histogram(x);
+% hold on
+% h2 = histogram(y);
+% h1.Normalization = 'pdf';
+% h1.BinWidth = 0.1;
+% h2.Normalization = 'pdf';
+% h2.BinWidth = 0.1;
+% [f1,xi1] = ksdensity(sigedge(groups==1)); plot(xi1,f1,'b', 'LineWidth', 3);
+% [f2,xi2] = ksdensity(sigedge(groups==2)); plot(xi2,f2,'r', 'LineWidth', 3);
+% xlabel('Edge weight')
+% title(sprintf('Edge weight distributions at %s mm', smoothing))
+% legend('ASD','TC','ASD,density','TC,density')
+% saveas(fig,sprintf('%s/WeightHist_%smm_Sphere.png',savefigpath,smoothing))
+% close all
+% end
+exit;
