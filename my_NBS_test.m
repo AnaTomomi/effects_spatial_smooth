@@ -41,9 +41,9 @@ fprintf('Computing NBS for smooth:%s and thres:%s \n',smoothing,thres)
 %Configure the folders and files
 folder1=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group1/Brainnetome_%smm',smoothing);
 folder2=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group2/Brainnetome_%smm',smoothing);
-savepath= sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/NBS_Brainnetome_%smm_F-test_%s_Fisher_2019',smoothing,thres);
-figure_path=sprintf('/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended/NBS_Brainnetome_%smm_F-test_%s_Fisher',smoothing,thres);
-data_path=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/subjects.mat');
+savepath= sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/NBS_Brainnetome_%smm_F-test_%s_Fisher_2019.mat',smoothing,thres);
+%figure_path=sprintf('/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended/NBS_Brainnetome_%smm_F-test_%s_Fisher',smoothing,thres);
+data_path=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/temp/subjects_%smm_t%s.mat',smoothing,thres);
 design_path=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/design.mat');
 %excel_file='/m/cs/scratch/networks/trianaa1/Paper1/Significant_Nets_Fisher_2019.xlsx';
 
@@ -91,10 +91,10 @@ end
 save(data_path,'data')
 data= data_path;
 
-design1=zeros(subNum,1); design1(1:subjectNum_per_group,1)=ones(subjectNum_per_group,1);
-design2=zeros(subNum,1); design2(subjectNum_per_group+1:end,1)=ones(subjectNum_per_group,1);
-design_mat=[design1 design2];
-save(design_path,'design_mat')
+% design1=zeros(subNum,1); design1(1:subjectNum_per_group,1)=ones(subjectNum_per_group,1);
+% design2=zeros(subNum,1); design2(subjectNum_per_group+1:end,1)=ones(subjectNum_per_group,1);
+% design_mat=[design1 design2];
+% save(design_path,'design_mat')
 design_mat=design_path;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -126,26 +126,27 @@ run NBSrun(UI,[])
 global nbs
 
 save(savepath,'nbs')
-%saveas(gcf,figure_path,'jpg');
-%close all
-% 
-% [~,~,raw] = xlsread(excel_file);
-% init_row=size(raw,1)+1;
-% if ~isempty(nbs.NBS.con_mat)
-%     [i,j]=find(nbs.NBS.con_mat{1});
-%     for n=1:length(i)
-%         i_lab=nbs.NBS.node_label{i(n)};
-%         j_lab=nbs.NBS.node_label{j(n)};
-%         stat=nbs.NBS.test_stat(i(n),j(n));
-%         fprintf('%s to %s. Test stat: %0.2f\n',num2str(i(n)),num2str(j(n)),stat);
-%         cohen=sqrt(stat)*sqrt((subjectNum_per_group+subjectNum_per_group)/(subjectNum_per_group*subjectNum_per_group));
-%         hedge=(1-(3/((4*(subjectNum_per_group+subjectNum_per_group-2))-1)))*cohen;
-%         raw(init_row,:)={pipeline,smoothing,num2str(i(n)),i_lab,num2str(j(n)),j_lab,num2str(stat),cohen,hedge};
-%         init_row=init_row+1;
-%     end
-%     raw=cell2table(raw);
-%     %writetable(raw,excel_file,'WriteVariableNames',false)
-% else
-%     raw(init_row,:)={pipeline,smoothing,'NaN','NaN','NaN','NaN','NaN','NaN','NaN'};
-% end
+
+% %saveas(gcf,figure_path,'jpg');
+% %close all
+% % 
+% % [~,~,raw] = xlsread(excel_file);
+% % init_row=size(raw,1)+1;
+% % if ~isempty(nbs.NBS.con_mat)
+% %     [i,j]=find(nbs.NBS.con_mat{1});
+% %     for n=1:length(i)
+% %         i_lab=nbs.NBS.node_label{i(n)};
+% %         j_lab=nbs.NBS.node_label{j(n)};
+% %         stat=nbs.NBS.test_stat(i(n),j(n));
+% %         fprintf('%s to %s. Test stat: %0.2f\n',num2str(i(n)),num2str(j(n)),stat);
+% %         cohen=sqrt(stat)*sqrt((subjectNum_per_group+subjectNum_per_group)/(subjectNum_per_group*subjectNum_per_group));
+% %         hedge=(1-(3/((4*(subjectNum_per_group+subjectNum_per_group-2))-1)))*cohen;
+% %         raw(init_row,:)={pipeline,smoothing,num2str(i(n)),i_lab,num2str(j(n)),j_lab,num2str(stat),cohen,hedge};
+% %         init_row=init_row+1;
+% %     end
+% %     raw=cell2table(raw);
+% %     %writetable(raw,excel_file,'WriteVariableNames',false)
+% % else
+% %     raw(init_row,:)={pipeline,smoothing,'NaN','NaN','NaN','NaN','NaN','NaN','NaN'};
+% % end
 end
