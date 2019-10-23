@@ -14,7 +14,8 @@ addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/Violinplot-Matlab'))
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 addpath(genpath('/m/cs/scratch/networks/trianaa1/Paper1'))
 
-folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations';
+%folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations';
+folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/Permutations';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
 thresholds={'005' '007' '009' '01' '011' '013' '015' '017' '019' '02'};
 parcellation='Brainnetome'; %'Brainnetome', 'Craddock30', 'Craddock100','Craddock350'
@@ -31,7 +32,8 @@ K=zeros(size(smooth,2),size(thresholds,2));
 for s=1:size(smooth,2)
     for t=1:size(thresholds,2)
        fprintf('smooth:%s and parcellation:%s \n',smooth{s},thresholds{t})
-       load(sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations/%s/links_%smm_%s.mat',parcellation,smooth{s},thresholds{t}))
+       %load(sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations/%s/weightedlinks_%smm_%s.mat',parcellation,smooth{s},thresholds{t}))
+       load(sprintf('%s/%s/weightedlinks_%smm_%s.mat',folder,parcellation,smooth{s},thresholds{t}))
     
         %Extract T-stat and p-val
         tstats = stats.tvals;
@@ -46,6 +48,7 @@ for s=1:size(smooth,2)
         link_pval = zeros(N,N); %Organize the p-values 
         link_pval(ids) = pcor;
         
+        links(links~=0)=1;
         [kden(s,t),Node(s,t),K(s,t)] = density_und(links);
    end
 end

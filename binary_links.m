@@ -14,7 +14,8 @@ addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/Violinplot-Matlab'))
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 addpath(genpath('/m/cs/scratch/networks/trianaa1/Paper1'))
 
-folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations';
+%folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations';
+folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/Permutations';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
 parcellation={'Brainnetome','Craddock30','Craddock100','Craddock350'};
 thr='01'; %10% density
@@ -31,7 +32,8 @@ K=zeros(size(smooth,2),size(parcellation,2));
 for s=1:size(smooth,2)
     for p=1:size(parcellation,2)
        fprintf('smooth:%s and parcellation:%s \n',smooth{s},parcellation{p})
-       load(sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations/%s/links_%smm_%s.mat',parcellation{p},smooth{s},thr))
+       %load(sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations/%s/links_%smm_%s.mat',parcellation{p},smooth{s},thr))
+       load(sprintf('%s/%s/weightedlinks_%smm_%s.mat',folder,parcellation{p},smooth{s},thr))
     
         %Extract T-stat and p-val
         tstats = stats.tvals;
@@ -46,6 +48,7 @@ for s=1:size(smooth,2)
         link_pval = zeros(N(p),N(p)); %Organize the p-values 
         link_pval(ids) = pcor;
         
+        links(links~=0)=1;
         [kden(s,p),Node(s,p),K(s,p)] = density_und(links);
    end
 end
@@ -55,11 +58,11 @@ f=figure;
 x=[str2double(smooth)]';
 colors={'#4daf4a','#984ea3','#377eb8','#e41a1c'};
 for i=1:4
-    plot(x,kden(:,i),'-o','color',colors{i},'LineWidth',3,'MarkerFaceColor',colors{i})
+    plot(x,K(:,i),'-o','color',colors{i},'LineWidth',3,'MarkerFaceColor',colors{i})
     hold on
 end
 xlabel('Smoothing level FWHM (mm)')
-ylabel('Network density')
+ylabel('Number of links')
 xticks(x)
 xticklabels(smooth)
 title({'Effects of spatial smoothing in different parcellations';'   '})
