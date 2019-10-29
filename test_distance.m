@@ -13,14 +13,17 @@ addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/Violinplot-Matlab'))
 
 folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
+%folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
+save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
-parcellation={'Brainnetome','Craddock30','Craddock100','Craddock350'};
-thres='6.25';
-N=[246,30,98,329];
+parcellation={'Brainnetome','Craddock100','Craddock350'};
+thres='16';
+N=[246,98,329];
 
 % Distance of links
 for p=1:size(parcellation,2)
     load(sprintf('/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-%s-0-2mm_with_subcortl_and_cerebellum.mat',parcellation{p}));
+    %load(sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/masks/FD05/group_roi_mask-%s-0-2mm_with_subcortl_and_cerebellum.mat',parcellation{p}));
     
     %Calculate the distances
     for i=1:size(smooth,2)
@@ -43,11 +46,11 @@ for p=1:size(parcellation,2)
     
     for k=1:size(dist,2)
         if all(isnan(dist(:,k)))
-            dist(1,k)=0;
+            dist(1:3,k)=0;
         end
     end   
     
-    fig=figure;
+    f=figure;
     violinplot(dist)
     xlabel('Smoothing level FWHM (mm)')
     ylabel('Distance (mm)')
@@ -58,5 +61,8 @@ for p=1:size(parcellation,2)
     set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
     set(gcf,'color',[1 1 1]);
     
+    saveas(f,sprintf('%s/NBS_%s_distance_profile.svg',save_path,parcellation{p}),'svg')
+    saveas(f,sprintf('%s/NBS_%s_distance_profile.eps',save_path,parcellation{p}),'epsc')
+
     clear dist
 end
