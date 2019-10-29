@@ -12,13 +12,17 @@ clc
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 
 folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
+%folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
+save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
+%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/UCLA';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
-parcellation={'Brainnetome','Craddock30','Craddock100','Craddock350'};
-thres='6.25';
-N=[246,30,98,329];
+parcellation={'Brainnetome','Craddock100','Craddock350'};
+thres='16';
+N=[246,98,329];
 
 % Distance of matrices
 for p=1:size(parcellation,2)
+    record=NaN(1,length(smooth));
     for i=1:size(smooth,2)
         fprintf('smooth:%s and parcellation:%s \n',smooth{i},parcellation{p})
         load(sprintf('%s/NBS_%s_%smm_F-test_%s_Fisher_2019.mat',folder,parcellation{p},smooth{i},thres))
@@ -26,8 +30,10 @@ for p=1:size(parcellation,2)
             mat{i}=full(nbs.NBS.con_mat{1}+nbs.NBS.con_mat{1}');
         else
             mat{i}=zeros(N(p),N(p));
+            record(i)=i;
         end
     end
+    record=record(~isnan(record));
     
     hamming=zeros(size(smooth,2),size(smooth,2));
     
@@ -40,6 +46,10 @@ for p=1:size(parcellation,2)
         end
     end
     hamming = hamming.*-1;
+    for i=1:length(record)
+        hamming(record(i),:)=NaN(1,16);
+        hamming(:,record(i))=NaN(16,1);
+    end
 
     %Hamming distances
     f=figure;
@@ -51,4 +61,7 @@ for p=1:size(parcellation,2)
     %caxis([-0.001,0])
     set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
     set(gcf,'color',[1 1 1]);
+    
+    saveas(f,sprintf('%s/NBS_%s_hamming.svg',save_path,parcellation{p}),'svg')
+    saveas(f,sprintf('%s/NBS_%s_hamming.eps',save_path,parcellation{p}),'epsc')
 end
