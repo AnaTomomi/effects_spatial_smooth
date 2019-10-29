@@ -2,6 +2,7 @@
 % This script analyzes the effects of smoothing in different parcellations%
 %                                                                         %
 % 26.03.2019 Created by Ana Triana                                        %
+% 29.10.2019 Add save command by Ana Triana                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear all
@@ -11,9 +12,11 @@ clc
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 
 folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
+%folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
+save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
-parcellation={'Brainnetome','Craddock30','Craddock100','Craddock350','sphere_Brainnetome','sphere_Craddock30','sphere_Craddock100','sphere_Craddock350'};
-thres='4';
+parcellation={'Brainnetome','Craddock100','Craddock350','sphere_Brainnetome','sphere_Craddock100','sphere_Craddock350'};
+thres='16';
 
 d=dir(folder);
 
@@ -35,17 +38,17 @@ end
 %Plot all thresholds
 f=figure;
 x=[str2double(smooth)]';
-colors={'#4daf4a','#984ea3','#377eb8','#e41a1c'};
-for i=1:4
+colors={'#4daf4a','#377eb8','#e41a1c'};
+for i=1:3
     plot(x,kden(:,i),'-o','color',colors{i},'LineWidth',3,'MarkerFaceColor',colors{i})
     hold on
 end
-for i=1:4
-    plot(x,kden(:,i+4),'--o','color',colors{i},'LineWidth',3,'MarkerFaceColor',colors{i})
+for i=1:3
+    plot(x,kden(:,i+3),'--o','color',colors{i},'LineWidth',3,'MarkerFaceColor',colors{i})
     hold on
 end
 xlabel('Smoothing level FWHM (mm)')
-ylabel('Network density')
+ylabel('Subnetwork density')
 xticks(x)
 xticklabels(smooth)
 title({'Effects of spatial smoothing in different parcellations';'   '})
@@ -53,5 +56,31 @@ set(gca,'FontSize',20)
 set(gca, 'FontName', 'Arial')
 legend(parcellation)
 legend boxoff
+box off
 set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 set(gcf,'color',[1 1 1]);
+
+saveas(f,sprintf('%s/NBS_parcellations_density.svg',save_path),'svg')
+saveas(f,sprintf('%s/NBS_parcellations_density.eps',save_path),'epsc')
+
+%Plot distance
+% Density
+f=figure;
+x=[str2double(smooth)]';
+scatter(x,kden(:,1),600,'filled')
+hold on
+scatter(x,kden(:,4),600,'d','filled')
+xlabel('Smoothing level FWHM (mm)')
+ylabel('Subnetwork density')
+xticks(x)
+xticklabels(smooth)
+title({'Density of significant links per smoothing level';'   '})
+set(gca,'FontSize',20)
+set(gca, 'FontName', 'Arial')
+legend('Brainnetome ROIs','Fixed ROI size','Location','northwest')
+legend boxoff
+set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
+set(gcf,'color',[1 1 1]);
+
+saveas(f,sprintf('%s/NBS_Brainnetome_density.svg',save_path),'svg')
+saveas(f,sprintf('%s/NBS_Brainnetome_density.eps',save_path),'epsc')
