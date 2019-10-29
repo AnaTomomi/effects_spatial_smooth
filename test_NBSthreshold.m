@@ -12,9 +12,11 @@ clc
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 
 folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
+%folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
 thres={'2.25','4','6.25','9','12.25','16','20.25','25'};
 parcellation='Brainnetome'; %'Brainnetome', 'Craddock30', 'Craddock100','Craddock350'
+save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
 
 d=dir(folder);
 
@@ -54,7 +56,7 @@ for i=1:size(thres,2)
     hold on
 end
 xlabel('Smoothing level FWHM (mm)')
-ylabel('Network density')
+ylabel('Subnetwork density')
 xticks(x)
 xticklabels(smooth)
 title({'Influence of NBS suprathresholds';'   '})
@@ -62,8 +64,12 @@ set(gca,'FontSize',20)
 set(gca, 'FontName', 'Arial')
 legend(thres)
 legend boxoff
+box off
 set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 set(gcf,'color',[1 1 1]);
+
+saveas(f,sprintf('%s/NBS_thresholds.svg',save_path),'svg')
+saveas(f,sprintf('%s/NBS_thresholds.eps',save_path),'epsc')
 
 %Plot a set of upper thresholds
 f=figure;
@@ -76,7 +82,7 @@ for i=1:size(kden_upper,2)
     hold on
 end
 xlabel('Smoothing level FWHM (mm)')
-ylabel('Network density')
+ylabel('Subetwork density')
 xticks(x)
 xticklabels(smooth)
 title({'Influence of NBS suprathresholds';'   '})
@@ -84,5 +90,9 @@ set(gca,'FontSize',20)
 set(gca, 'FontName', 'Arial')
 legend(thres_upper)
 legend boxoff
+box off
 set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 set(gcf,'color',[1 1 1]);
+
+saveas(f,sprintf('%s/NBS_thresholds_zoom1_v2.svg',save_path),'svg')
+saveas(f,sprintf('%s/NBS_thresholds_zoom2_v2.eps',save_path),'epsc')
