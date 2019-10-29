@@ -9,13 +9,22 @@ clear all
 close all
 clc
 
-folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
+%folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
+folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
+%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
+save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/UCLA';
+
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
-n1=47;
-n2=47;
-parcellation={'Brainnetome','Craddock30','Craddock100','Craddock350'};
-thres='16';
-N=[246,30,98,329];
+if strcmp(folder,'/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS')
+    n1=22; 
+    n2=22;
+else
+    n1=47;
+    n2=47;
+end
+parcellation={'Brainnetome','Craddock100','Craddock350'};
+thres='12.25';
+N=[246,98,329];
 
 %Load all the F stats and significant links
 for p=1:size(parcellation,2)
@@ -107,7 +116,7 @@ for p=1:size(parcellation,2)
         set(fig,'AlphaData',.5*sort_column+.5)
         hold on
         x=[0.5 0.5];
-        y=[0 120];
+        y=[0 size(ordered_Cohen,1)+1];
         for i=1:16
             line(x+i,y,'Color','k')
         end
@@ -125,5 +134,9 @@ for p=1:size(parcellation,2)
         set(gca, 'FontName', 'Arial')
         set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
         set(gcf,'color',[1 1 1]);
+        
+        saveas(fig,sprintf('%s/NBS_%s_aurora.svg',save_path,parcellation{p}),'svg')
+        saveas(fig,sprintf('%s/NBS_%s_aurora.eps',save_path,parcellation{p}),'epsc')
     end
+    close all
 end
