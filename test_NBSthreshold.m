@@ -3,6 +3,7 @@
 % presented in the Effects of spatial smoothing paper                     %
 %                                                                         %
 % 26.03.2019 Created by Ana Triana                                        %
+% 29.10.2019 Add save command by Ana Triana                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear all
