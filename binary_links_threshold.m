@@ -16,6 +16,8 @@ addpath(genpath('/m/cs/scratch/networks/trianaa1/Paper1'))
 
 %folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations';
 folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/Permutations';
+%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
+save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/UCLA';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
 thresholds={'005' '007' '009' '01' '011' '013' '015' '017' '019' '02'};
 parcellation='Brainnetome'; %'Brainnetome', 'Craddock30', 'Craddock100','Craddock350'
@@ -32,7 +34,6 @@ K=zeros(size(smooth,2),size(thresholds,2));
 for s=1:size(smooth,2)
     for t=1:size(thresholds,2)
        fprintf('smooth:%s and parcellation:%s \n',smooth{s},thresholds{t})
-       %load(sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations/%s/weightedlinks_%smm_%s.mat',parcellation,smooth{s},thresholds{t}))
        load(sprintf('%s/%s/weightedlinks_%smm_%s.mat',folder,parcellation,smooth{s},thresholds{t}))
     
         %Extract T-stat and p-val
@@ -58,7 +59,7 @@ f=figure;
 x=[str2double(smooth)]';
 colors={'#6a3d9a','#cab2d6','#ff7f00','#fdbf6f','#e31a1c','#fb9a99','#33a02c','#b2df8a','#1f78b4','#a6cee3'};
 for i=1:size(thresholds,2)
-    plot(x,kden(:,i),'-o','color',colors{i},'LineWidth',3,'MarkerFaceColor',colors{i})
+    plot(x,K(:,i),'-o','color',colors{i},'LineWidth',3,'MarkerFaceColor',colors{i})
     hold on
 end
 xlabel('Smoothing level FWHM (mm)')
@@ -73,10 +74,13 @@ legend boxoff
 set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 set(gcf,'color',[1 1 1]);
 
+saveas(f,sprintf('%s/weight_thresholds.svg',save_path),'svg')
+saveas(f,sprintf('%s/weight_thresholds.eps',save_path),'epsc')
+
 %Plot a set of upper thresholds
 f=figure;
 x=[str2double(smooth)]';
-kden_upper=kden(:,3:10);
+kden_upper=K(:,3:10);
 thres_upper={'009' '01' '011' '013' '015' '017' '019' '02'};
 colors={'#ff7f00','#fdbf6f','#e31a1c','#fb9a99','#33a02c','#b2df8a','#1f78b4','#a6cee3'};
 for i=1:size(kden_upper,2)
@@ -94,12 +98,14 @@ legend(thres_upper)
 legend boxoff
 set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 set(gcf,'color',[1 1 1]);
+saveas(f,sprintf('%s/weight_thresholds_zoom.svg',save_path),'svg')
+saveas(f,sprintf('%s/weight_thresholds_zoom.eps',save_path),'epsc')
 
 %Plot a set of a set of thresholds
 f=figure;
 x=[str2double(smooth)]';
-kden_upper=kden(:,3:5);
-thres_upper={'009' '01' '011'};
+kden_upper=K(:,2:4);
+thres_upper={'007' '009' '01'};
 colors={'#ff7f00','#fdbf6f','#e31a1c'};
 for i=1:size(kden_upper,2)
     plot(x,kden_upper(:,i),'-o','color',colors{i},'LineWidth',3,'MarkerFaceColor',colors{i})
@@ -120,7 +126,7 @@ set(gcf,'color',[1 1 1]);
 %Plot a set of a set of thresholds II
 f=figure;
 x=[str2double(smooth)]';
-kden_upper=kden(:,6:8);
+kden_upper=K(:,6:8);
 thres_upper={'013' '015' '017'};
 colors={'#fb9a99','#33a02c','#b2df8a'};
 for i=1:size(kden_upper,2)
