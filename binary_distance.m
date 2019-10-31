@@ -16,10 +16,13 @@ addpath(genpath('/m/cs/scratch/networks/trianaa1/Paper1'))
 
 %folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations';
 folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/Permutations';
+%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
+save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/UCLA';
+
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
-parcellation={'Brainnetome','Craddock30','Craddock100','Craddock350'};
-thr='01'; %10% density
-N=[246,30,98,329];
+parcellation={'Brainnetome'};%,'Craddock100','Craddock350'};
+thr='013'; %10% density
+N=[246];%,98,329];
 
 % Distance of links
 for p=1:size(parcellation,2)
@@ -29,7 +32,6 @@ for p=1:size(parcellation,2)
     %Calculate the distances
     for i=1:size(smooth,2)
         fprintf('smooth:%s and parcellation:%s \n',smooth{i},parcellation{p})
-        %load(sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations/%s/weightedlinks_%smm_%s.mat',parcellation{p},smooth{i},thr))
         load(sprintf('%s/%s/weightedlinks_%smm_%s.mat',folder,parcellation{p},smooth{i},thr))
     
         %Extract T-stat and p-val
@@ -59,11 +61,11 @@ for p=1:size(parcellation,2)
     
     for k=1:size(dist,2)
         if all(isnan(dist(:,k)))
-            dist(1,k)=0;
+            dist(1:3,k)=0;
         end
     end   
     
-    fig=figure;
+    f=figure;
     violinplot(dist)
     xlabel('Smoothing level FWHM (mm)')
     ylabel('Distance (mm)')
@@ -73,6 +75,9 @@ for p=1:size(parcellation,2)
     set(gca, 'FontName', 'Arial')
     set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
     set(gcf,'color',[1 1 1]);
+    
+    saveas(f,sprintf('%s/weight_%s_distance_profile.svg',save_path,parcellation{p}),'svg')
+    saveas(f,sprintf('%s/weight_%s_distance_profile.eps',save_path,parcellation{p}),'epsc')
     
     clear dist
 end
