@@ -3,6 +3,7 @@
 % discovered in each smoothing levels                                     %
 %                                                                         %
 % 14.10.2019 Modified by Ana T. Added comments on the contents of the file%
+% 29.10.2019 Modified by Ana T. Added save command                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear all
@@ -12,18 +13,19 @@ clc
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/Violinplot-Matlab'))
 
-folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
-%folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
-save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
+%folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
+folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
+%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
+save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/UCLA';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
 parcellation={'Brainnetome','Craddock100','Craddock350'};
-thres='16';
+thres='12.25';
 N=[246,98,329];
 
 % Distance of links
 for p=1:size(parcellation,2)
-    load(sprintf('/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-%s-0-2mm_with_subcortl_and_cerebellum.mat',parcellation{p}));
-    %load(sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/masks/FD05/group_roi_mask-%s-0-2mm_with_subcortl_and_cerebellum.mat',parcellation{p}));
+    %load(sprintf('/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-%s-0-2mm_with_subcortl_and_cerebellum.mat',parcellation{p}));
+    load(sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/masks/FD05/group_roi_mask-%s-0-2mm_with_subcortl_and_cerebellum.mat',parcellation{p}));
     
     %Calculate the distances
     for i=1:size(smooth,2)
@@ -54,6 +56,7 @@ for p=1:size(parcellation,2)
     violinplot(dist)
     xlabel('Smoothing level FWHM (mm)')
     ylabel('Distance (mm)')
+    ylim([0 160])
     title(sprintf('Distances of significant links per smoothing level: %s',parcellation{p}))
     xticklabels(smooth)
     set(gca,'FontSize',20)

@@ -17,8 +17,8 @@ import sys
 import shutil
 
 folder='/m/cs/scratch/networks/data/ABIDE_II/Forward/'
-smoothing='Brainnetome_32mm/'
-matrix='Adj_NoThr_Craddock350.mat'
+smoothing='Brainnetome_28mm/'
+matrix='Adj_NoThr_Craddock30.mat'
 #matrix='Adjacency_10.mat'
 Thr='Thr0/'
 output_folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/'
@@ -43,7 +43,7 @@ with open('/m/cs/scratch/networks/trianaa1/Paper1/smoothing-group/phenotypic-fil
             group_name='group2/'
         move_to=output_folder+group_name+smoothing+database+'-'+user+'-'+matrix
         shutil.move(move_from,move_to)
-        #print move_from
-        #print move_to
+        print move_from
+        print move_to
 print smoothing
 #print users 

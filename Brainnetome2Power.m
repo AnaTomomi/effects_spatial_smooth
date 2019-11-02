@@ -3,8 +3,9 @@ close all
 clc
 
 power=csvread('/m/cs/scratch/networks/trianaa1/toolboxes/compare_modules/power2011_modules.csv');
-load('/m/cs/scratch/networks/trianaa1/Atlas/brainnetome_MPM_rois_2mm.mat');
-savepath='/m/cs/scratch/networks/trianaa1/Atlas/brainnetome_MPM_rois_2mm_PowerROIs.mat';
+%load('/m/cs/scratch/networks/trianaa1/Atlas/brainnetome_MPM_rois_2mm.mat');
+load('/m/cs/scratch/networks/trianaa1/Atlas/Craddock_random_350_rois_2mm.mat');
+savepath='/m/cs/scratch/networks/trianaa1/Atlas/Craddock_random_350_rois_2mm_PowerROIs.mat';
 
 roi_size=size(rois,2);
 std_size=size(power,1);

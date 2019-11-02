@@ -15,7 +15,7 @@ pipeline='Forward';
 variant='Fisher_2019'; %'', 'Fisher', '_Sphere', %Sphere_Fisher
 method='NBS';
 
-group_mask='/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-Brainnetome_0mm-0-2mm_with_subcortl_and_cerebellum.mat';
+group_mask='/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-Brainnetome-0-2mm_with_subcortl_and_cerebellum.mat';
 save_path=sprintf('/m/cs/scratch/networks/trianaa1/Paper1/Figures/%s/%s-%s-distance_smooth',pipeline,method,variant);
 
 if strcmp(method,'FDR')

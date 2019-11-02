@@ -11,16 +11,16 @@ clear all
 close all
 
 %Define subject folder
-folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/Forward/Brainnetome_0mm/';
+folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/group2/Brainnetome_0mm/';
 %Define folder containing the FD matrices
-folder2='/m/cs/scratch/networks/data/ABIDE_II/Forward/Brainnetome_0mm/';
+folder2='/m/cs/scratch/networks/data/UCLA_openneuro/Brainnetome_0mm/';
 %Define saving path
-write_path='/m/cs/scratch/networks/data/ABIDE_II/Analysis/group1/regress.csv';
+write_path='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/group2/regress.csv';
 %Define language for regression
 config='python'; %options: 'matlab', 'python'
 
 d=dir(folder);
-d=d(3:end);
+d=d(3:4:end);
 
 
 
@@ -29,6 +29,8 @@ ETH=zeros(length(d),1);
 TCD=zeros(length(d),1);
 USM=zeros(length(d),1);
 NYU=zeros(length(d),1);
+CMU=zeros(length(d),1);
+CALTECH=zeros(length(d),1);
 intercept=ones(length(d),1);
 
 for i=1:length(d)
@@ -47,15 +49,21 @@ for i=1:length(d)
         USM(i,1)=1;
     elseif strcmp(site,'USM_I')
         USM(i,1)=1;
-    else
+    elseif strcmp(site,'NYU_I')
         NYU(i,1)=1;
+    elseif strcmp(site,'TCD_I')
+        TCD(i,1)=1;
+    elseif strcmp(site,'CMU_I')
+        CMU(i,1)=1;
+    else
+        CALTECH(i,1)=1;
     end
 end
 
 if strcmp(config,'matlab')
-    T=table([Subjects],[ETH],[TCD],[USM],[NYU],[MeanFD],[intercept]);
+    T=table([Subjects],[ETH],[TCD],[USM],[NYU],[CMU],[CALTECH],[MeanFD],[intercept]);
 else
-    T=table([Subjects],[ETH],[TCD],[USM],[NYU],[MeanFD]);
+    T=table([Subjects],[ETH],[TCD],[USM],[NYU],[CMU],[CALTECH],[MeanFD]);
 end
 
 writetable(T,write_path)

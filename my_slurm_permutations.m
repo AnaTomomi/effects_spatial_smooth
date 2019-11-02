@@ -36,8 +36,8 @@ folder2=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/gr
 savepath='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations/Brainnetome';
 
 
-group1=dir(folder1); group1=group1(3:end); group1=group1(2:4:end);
-group2=dir(folder2); group2=group2(3:end); group2=group2(2:4:end);
+group1=dir(folder1); group1=group1(3:end); group1=group1(2:16:end);
+group2=dir(folder2); group2=group2(3:end); group2=group2(2:16:end);
 
 disp('parameters set')
 
@@ -51,26 +51,28 @@ disp('Data prepared')
 % Prepare the matrices 
 n=size(d,1);
 N=246;
-Deg = zeros(length(d),N);
-Clus = zeros(length(d),N);
-meanClus = zeros(length(d),1);
-Eglob = zeros(length(d),1);
-Eloc = zeros(length(d),N);
-Betw = zeros(length(d),N);
+Strength = zeros(length(d),N);
+Clus_we = zeros(length(d),N);
+meanClus_we = zeros(length(d),1);
+Eglob_we = zeros(length(d),1);
+Eloc_we = zeros(length(d),N);
+Betw_we = zeros(length(d),N);
 
 
 for i=1:n
     load(sprintf('%s/%s',d(i).folder,d(i).name))
     Adj=tanh(Adj); %Unz-transform each regressed matrix
-    %Adj=Adj+diag(ones(1,N));
-    Adj=threshold_absolute(Adj, thr); %Threshold the matrix to thr density
-    Deg(i,:)=double(degrees_und(Adj));
-    Clus(i,:)=clustering_coef_bu(Adj)';
-    CL1=1./clustering_coef_bu(Adj);CL1(CL1==Inf) = 0;
-    meanClus(i) = mean(CL1);
-    Eloc(i,:)=double(efficiency_bin(Adj,1))';
-    Eglob(i) = double(efficiency_bin(Adj));
-    Betw(i,:) = betweenness_bin(Adj);
+    Adj=Adj+Adj';%diag(ones(1,N));
+    Adj=threshold_proportional(Adj, str2double(thr)); %Threshold the matrix to thr density
+    Adj=weight_conversion(Adj, 'normalize');
+    Strength(i,:)=double(strengths_und(Adj));
+    Clus_we(i,:)=clustering_coef_wu(Adj)';
+    CL1=1./clustering_coef_wu(Adj);CL1(CL1==Inf) = 0;
+    meanClus_we(i) = mean(CL1);
+    Eloc_we(i,:)=double(efficiency_wei(Adj,2))';
+    Eglob_we(i) = double(efficiency_wei(Adj));
+    Adj=weight_conversion(Adj, 'lengths'); %Required for betweenness centraility computations
+    Betw_we(i,:) = betweenness_wei(Adj);
     %Dist=double(distance_bin(Adj));
     %Dist(Dist==Inf) = NaN;
 end
@@ -78,8 +80,8 @@ disp('Matrices done')
 
 %% Degree
 % Start the permutations adn save them
-DegStat = bramila_ttest2_np(Deg',groups,10000);
-save(sprintf('%s/DegStat_%smm_%s',savepath,smoothing,thr),'DegStat')
+StrStat = bramila_ttest2_np(Strength',groups,10000);
+save(sprintf('%s/StrStat_%smm_%s.mat',savepath,smoothing,thr),'StrStat')
 
 % %Get the T and P values
 % DegT = DegStat.tvals;
@@ -92,31 +94,31 @@ save(sprintf('%s/DegStat_%smm_%s',savepath,smoothing,thr),'DegStat')
 % Deg1largerthan2 = DegT.*(DegT>0 & DegQ<0.05).*(sum(Deg~=0)>1)';
 % Deg2largerthan1 = DegT.*(DegT<0 & DegQ<0.05).*(sum(Deg~=0)>1)';
 
-disp('Degree done!')
+disp('Strength done!')
 
 %% Clustering
-ClusStat = bramila_ttest2_np(Clus',groups,10000);
-save(sprintf('%s/ClusStat_%smm_%s',savepath,smoothing,strrep(thr,'.','')),'ClusStat')
+ClusweStat = bramila_ttest2_np(Clus_we',groups,10000);
+save(sprintf('%s/ClusweStat_%smm_%s.mat',savepath,smoothing,strrep(thr,'.','')),'ClusweStat')
 disp('clustering done!')
 
 %% Mean clustering
-meanClusStat = bramila_ttest2_np(meanClus',groups,10000);
-save(sprintf('%s/meanClusStat_%smm_%s',savepath,smoothing,strrep(thr,'.','')),'meanClusStat')
+meanClusweStat = bramila_ttest2_np(meanClus_we',groups,10000);
+save(sprintf('%s/meanClusweStat_%smm_%s.mat',savepath,smoothing,strrep(thr,'.','')),'meanClusweStat')
 disp('Mean Clustering done!')
 
 %% Global Efficiency
-EglobStat = bramila_ttest2_np(Eglob',groups,10000);
-save(sprintf('%s/EglobStat_%smm_%s',savepath,smoothing,strrep(thr,'.','')),'EglobStat')
+EglobweStat = bramila_ttest2_np(Eglob_we',groups,10000);
+save(sprintf('%s/EglobweStat_%smm_%s.mat',savepath,smoothing,strrep(thr,'.','')),'EglobweStat')
 disp('Global Efficiency done!')
 
 %% Local Efficiency
-ElocStat = bramila_ttest2_np(Eloc',groups,10000);
-save(sprintf('%s/ElocStat_%smm_%s',savepath,smoothing,strrep(thr,'.','')),'ElocStat')
+ElocweStat = bramila_ttest2_np(Eloc_we',groups,10000);
+save(sprintf('%s/ElocweStat_%smm_%s.mat',savepath,smoothing,strrep(thr,'.','')),'ElocweStat')
 disp('Local Efficiency done!')
 
 %% Betweeness centrality
-BetwStat = bramila_ttest2_np(Betw',groups,10000);
-save(sprintf('%s/BetwStat_%smm_%s',savepath,smoothing,strrep(thr,'.','')),'BetwStat')
+BetwweStat = bramila_ttest2_np(Betw_we',groups,10000);
+save(sprintf('%s/BetwweStat_%smm_%s.mat',savepath,smoothing,strrep(thr,'.','')),'BetwweStat')
 disp('Betweeness centrality done!')
 
 

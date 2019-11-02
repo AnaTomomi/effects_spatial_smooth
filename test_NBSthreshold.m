@@ -14,10 +14,12 @@ addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 
 folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
 %folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
+save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
+%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/UCLA';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
 thres={'2.25','4','6.25','9','12.25','16','20.25','25'};
 parcellation='Brainnetome'; %'Brainnetome', 'Craddock30', 'Craddock100','Craddock350'
-save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
+%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
 
 d=dir(folder);
 
@@ -75,9 +77,9 @@ saveas(f,sprintf('%s/NBS_thresholds.eps',save_path),'epsc')
 %Plot a set of upper thresholds
 f=figure;
 x=[str2double(smooth)]';
-kden_upper=kden(:,4:8);
-thres_upper={'9','12.25','16','20.25','25'};
-colors={'#ff7f00','#984ea3','#4daf4a','#377eb8','#e41a1c'};
+kden_upper=kden(:,5:8);
+thres_upper={'12.25','16','20.25','25'};
+colors={'#984ea3','#4daf4a','#377eb8','#e41a1c'};
 for i=1:size(kden_upper,2)
     plot(x,kden_upper(:,i),'-o','color',colors{i},'LineWidth',3,'MarkerFaceColor',colors{i})
     hold on
@@ -95,5 +97,5 @@ box off
 set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
 set(gcf,'color',[1 1 1]);
 
-saveas(f,sprintf('%s/NBS_thresholds_zoom1_v2.svg',save_path),'svg')
-saveas(f,sprintf('%s/NBS_thresholds_zoom2_v2.eps',save_path),'epsc')
+saveas(f,sprintf('%s/NBS_thresholds_zoom1.svg',save_path),'svg')
+saveas(f,sprintf('%s/NBS_thresholds_zoom2.eps',save_path),'epsc')

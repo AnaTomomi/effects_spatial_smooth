@@ -14,6 +14,7 @@ addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
 %folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
 save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
+%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/UCLA';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
 parcellation={'Brainnetome','Craddock100','Craddock350','sphere_Brainnetome','sphere_Craddock100','sphere_Craddock350'};
 thres='16';

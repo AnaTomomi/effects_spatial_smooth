@@ -6,7 +6,7 @@
 % 15.10.2019 Created by Ana Triana                                        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+% Influence of the thresholds
 clear all
 close all
 clc
@@ -16,83 +16,11 @@ addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 addpath(genpath('/m/cs/scratch/networks/trianaa1/Paper1'))
 
 folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations';
-excel_path='/m/cs/scratch/networks/trianaa1/Paper1/ABIDE_extended_files/binary_parcellation.xlsx';
-smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
-parcellation={'Brainnetome','Craddock30','Craddock100','Craddock350'};
-meas = {'DegStat', 'BetwStat','ClusStat','EglobStat','ElocStat','meanClusStat'};
-thr='01'; %10% density
-
-d=dir(folder);
-
-%Influence of the parcellation
-for p=1:size(parcellation,2)
-    for m=1:size(meas,2)
-        fprintf('Computing for %s \n',meas{m})
-        for s=1:size(smooth,2)
-            if m==1
-                load(sprintf('%s/%s/%s_%smm_%s.%s.mat',folder,parcellation{p},meas{m},smooth{s},thr(1),thr(2)))
-            else
-                load(sprintf('%s/%s/%s_%smm_%s.mat',folder,parcellation{p},meas{m},smooth{s},thr))
-            end
-       
-            Stat = eval(meas{m});
-            tstats = Stat.tvals;
-            pvals = 2*min(Stat.pvals,[],2);
-            pcor = mafdr(pvals,'BHFDR', 'true');
-            Signficant = tstats.*(pcor<0.05);%.*(sum(Degree~=0)>1)';
-            node = find(Signficant~=0);
-            if isempty(node)
-                dummy(1,1) = str2num(smooth{s});
-                dummy(1,2) = nan;
-                dummy(1,3) = nan;
-            else
-                dummy(:,1) = ones(size(node,1),1)*str2num(smooth{s});
-                dummy(:,2) = node';
-                dummy(:,3) = pcor(node)';
-            end
-            if s==1
-                array = dummy;
-            else
-                array = vertcat(array,dummy);
-            end
-            clear dummy
-        end
-        results{p,m} = array;
-        clear array
-    end
-end
-
-%Organizing in tables
-par_num=[1,2,3,4]; %1Brainnetome, 2Craddock30, 3Craddock100, 4Craddock350
-for m=1:size(meas,2)
-    table=zeros(1,4);
-    for p=1:size(parcellation,2)
-        explore=results{p,m};
-        if ~all(isnan(explore(:,2)))
-            explore=explore(~isnan(explore(:,2)),:);
-            explore(:,4)=ones(size(explore,1),1)*par_num(p);
-            table=vertcat(table,explore);
-            clear explore
-        end
-    end
-    writematrix(table,excel_path,'Sheet',meas{m})
-    clear table
-end
-
-
-%% Influence of the thresholds
-clear all
-close all
-clc
-
-addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/Violinplot-Matlab'))
-addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
-addpath(genpath('/m/cs/scratch/networks/trianaa1/Paper1'))
-
-folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations';
+%folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/Permutations';
 excel_path='/m/cs/scratch/networks/trianaa1/Paper1/ABIDE_extended_files/binary_graphmeas.xlsx';
+%excel_path='/m/cs/scratch/networks/trianaa1/Paper1/UCLA_files/binary_graphmeas.xlsx';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
-parcellation={'Brainnetome','Craddock30','Craddock100','Craddock350'};
+parcellation={'Brainnetome'};%,'Craddock100','Craddock350'};
 meas = {'DegStat', 'BetwStat','ClusStat','EglobStat','ElocStat','meanClusStat'};
 thresholds={'005' '007' '009' '01' '011' '013' '015' '017' '019' '02'};
 

@@ -112,11 +112,11 @@ roi_voxel_data.roi_ts = roi_ts;
 roi_voxel_data.roi_voxel_ts = roi_voxel_ts;
 
 if strcmp(cfg.adjacency_rois{1}, 'all')
-    roi_voxel_ts_info_name = ['roi_voxel_ts_all_rois_voxel_info.mat'];%roi_voxel_ts_info_name = ['roi_voxel_ts_all_rois_info.mat'];
-    roi_voxel_ts_name = ['roi_voxel_ts_all_rois_voxel.mat'];%roi_voxel_ts_name = ['roi_voxel_ts_all_rois.mat'];
+    roi_voxel_ts_info_name = ['roi_brainnetome07_ts_all_rois_info.mat'];%roi_voxel_ts_info_name = ['roi_voxel_ts_all_rois_info.mat'];
+    roi_voxel_ts_name = ['roi_brainnetome07_ts_all_rois.mat'];%roi_voxel_ts_name = ['roi_voxel_ts_all_rois.mat'];
 else
-    roi_voxel_ts_info_name = ['roi_voxel_ts_voxel_info.mat'];%roi_voxel_ts_info_name = ['roi_voxel_ts_info.mat'];
-    roi_voxel_ts_name = ['roi_voxel_ts_voxel.mat'];%roi_voxel_ts_name = ['roi_voxel_ts.mat'];
+    roi_voxel_ts_info_name = ['roi_brainnetome07_ts_voxel_info.mat'];%roi_voxel_ts_info_name = ['roi_voxel_ts_info.mat'];
+    roi_voxel_ts_name = ['roi_brainnetome07_ts_voxel.mat'];%roi_voxel_ts_name = ['roi_voxel_ts.mat'];
 end
 
 roi_voxel_ts_path = fullfile([cfg.inputfolder], roi_voxel_ts_name);

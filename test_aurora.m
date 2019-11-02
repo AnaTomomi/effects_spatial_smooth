@@ -106,7 +106,9 @@ for p=1:size(parcellation,2)
         %Plot with colors
         ordered_Cohen = Cohen(order,:);
 
-        hex=['#1c6ff8';'#1c6ff8';'#31db92';'#31db92';'#31db92';'#31db92';'#31db92';'#31db92';'#fef720';'#fef720';'#fef720';'#fef720';'#fef720'];
+        %hex=['#1c6ff8';'#1c6ff8';'#31db92';'#31db92';'#31db92';'#31db92';'#31db92';'#31db92';'#fef720';'#fef720';'#fef720';'#fef720';'#fef720';'#fef720';'#fef720';'#fef720';'#fef720'];
+        hex=['#1c6ff8';'#1c6ff8';'#31db92';'#31db92';'#31db92';'#31db92';'#31db92';'#31db92';'#fef720';'#fef720';'#fef720'];
+        
         my_map = sscanf(hex','#%2x%2x%2x',[3,size(hex,1)]).' / 255;
         colormap(my_map)
         caxis([0,1.3])
@@ -121,7 +123,7 @@ for p=1:size(parcellation,2)
             line(x+i,y,'Color','k')
         end
         colorbar
-        caxis([0,1])
+        %caxis([0,1.1])
         xlabel('Smoothing level FWHM (mm)')
         ylabel('Sample of Links')
         title(sprintf('Effect Size for: %s',parcellation{p}))

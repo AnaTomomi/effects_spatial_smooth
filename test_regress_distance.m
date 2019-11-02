@@ -12,13 +12,13 @@ clc
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/Violinplot-Matlab'))
 
-%folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
-folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
-%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
-save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/UCLA';
+folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
+%folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
+save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
+%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/UCLA';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
 parcellation={'Brainnetome','Craddock100','Craddock350'};
-thres='12.25';
+thres='16';
 N=[246,98,329];
 
 % % Plots of distance of links
@@ -63,8 +63,8 @@ N=[246,98,329];
 %Spearman correlation
 for p=1:size(parcellation,2)
     %Load and calculate the distance between all nodes in the parcellation
-    %load(sprintf('/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-%s-0-2mm_with_subcortl_and_cerebellum.mat',parcellation{p}));
-    load(sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/masks/FD05/group_roi_mask-%s-0-2mm_with_subcortl_and_cerebellum.mat',parcellation{p}));
+    load(sprintf('/m/cs/scratch/networks/data/ABIDE_II/Forward/masks/group_roi_mask-%s-0-2mm_with_subcortl_and_cerebellum.mat',parcellation{p}));
+    %load(sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/masks/FD05/group_roi_mask-%s-0-2mm_with_subcortl_and_cerebellum.mat',parcellation{p}));
     dist=zeros(N(p),N(p));
     for n1=1:N(p)
         for n2=1:N(p)
@@ -97,6 +97,7 @@ xlabel('Smoothing level FWHM (mm)')
 ylabel('Spearman rho')
 xticks(x)
 xticklabels(smooth)
+ylim([-0.2 0.2])
 title('Effects of spatial smoothing in distance')
 set(gca,'FontSize',20)
 set(gca, 'FontName', 'Arial')
@@ -117,6 +118,7 @@ xlabel('Smoothing level FWHM (mm)')
 ylabel('Spearman rho')
 xticks(x)
 xticklabels(smooth)
+ylim([-0.15 0.15])
 title('Effects of spatial smoothing in distance')
 set(gca,'FontSize',20)
 set(gca, 'FontName', 'Arial')

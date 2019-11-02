@@ -12,17 +12,22 @@ clear all
 clc
 
 %Set the variable names
-name='Adj_NoThr_Craddock350.mat';
-name2='Correlation_Craddock350.mat';
-name3='Craddock350.mat';
-parcel='roi_craddock350_ts_all_rois.mat';
-threshold=[5 7 9 10 11 13 15 17 19 20];
+name='Adj_NoThr_Brainnetome07.mat';
+name2='Correlation_Brainnetome07.mat';
+%name3='Brainnetome.mat';
+parcel='roi_brainnetome07_ts_all_rois.mat';
+%threshold=[5 7 9 10 11 13 15 17 19 20];
 
 %List the subjects
-d = dir('/m/cs/scratch/networks/data/ABIDE_II/Forward/*/*/*');
-d(ismember({d.name}, {'.', '..','group_mask-Brainnetome_0mm-2mm.nii','group_roi_mask-Brainnetome_0mm-0-2mm_with_subcortl_and_cerebellum.mat','group_roi_mask-Brainnetome_0mm-0-2mm_with_subcortl_and_cerebellum.nii','group_roi_mask-Brainnetome_0mm-0-2mm_with_subcortl_and_cerebellum_correctedMNI.mat'})) = [];
+d=dir('/m/cs/scratch/networks/data/UCLA_openneuro/*/');
+d(ismember({d.folder}, {'/scratch/cs/networks/data/UCLA_openneuro/Preprocessed','masks'})) = [];
+d(ismember({d.name}, {'.', '..','FD05','FD07','FD08'})) = [];
+fid = fopen('/m/cs/scratch/networks/data/UCLA_openneuro/subjects_FD07.txt','r');
+Data=textscan(fid, '%s', 'delimiter', '\n', 'whitespace', '');
+subject_list  = Data{1};
+fclose(fid);
 
-%check if the files have been created and if yes, then skip that subject
+d(~ismember({d.name}, subject_list))=[];
 for i=1:(length(d))
     if ~isfile(sprintf('%s/%s/%s',d(i).folder,d(i).name,name))
         subjects{i} = sprintf('%s/%s/%s',d(i).folder,d(i).name,parcel);
@@ -48,14 +53,15 @@ for i=1:length(subjects)
     %load the FD diagnostics matrix
     [filepath,~,~]=fileparts(subjects{i});
     [dummy,subject_id,~]=fileparts(filepath);
-    [dummy,site,~]=fileparts(dummy);
-    [root,smooth,~]=fileparts(dummy);
-    load(sprintf('%s/Brainnetome_0mm/%s/%s/bramila/diagnostics.mat',root,site,subject_id)) %changeme
+    [root,site,~]=fileparts(dummy);
+    %[root,smooth,~]=fileparts(dummy);
+    load(sprintf('%s/Brainnetome_0mm/%s/bramila/diagnostics.mat',root,subject_id)) %changeme
     clear CSF; clear csfIDs, clear DV; clear GM; clear gmIDs; clear SD; 
     clear WM; clear wmIDs; clear GS; clear gsIDs;
     
+    
     %Look the band in which the sequence length is greater than 4.5 min 
-    Idx=find(FD>0.5); %finds which FD is over 0.5
+    Idx=find(FD>0.7); %finds which FD is over 0.5
     
     %If there are points in which FD>0.5, the sequence is splitted because we
     %cannot use these points. Then, we need to calculate what is the length of
@@ -90,7 +96,7 @@ for i=1:length(subjects)
         else
             t_start=intervals(chosenInt-1)+1;
             t_end=intervals(chosenInt)+intervals(chosenInt-1)-1;%
-            if FD(end)<0.5 && t_end==size(FD,1)-1 %204 comes from TCD_II size of FD
+            if FD(end)<0.7 && t_end==size(FD,1)-1 %204 comes from TCD_II size of FD
                 t_end=t_end+1;
             end
             %FD=FD(t_start:t_end,1);
@@ -107,9 +113,9 @@ for i=1:length(subjects)
     if doAdjacency==1
         s=size(rois,1);
         Adj = zeros(s,s);
-        for i=1:s
-            for j=(i+1):s
-                Adj(i,j) = corr(rois(i,:)',rois(j,:)','Type','Pearson');
+        for k=1:s
+            for j=(k+1):s
+                Adj(k,j) = corr(rois(k,:)',rois(j,:)','Type','Pearson');
             end
         end
         
@@ -133,25 +139,25 @@ for i=1:length(subjects)
         %save the adjacency matrix without thresholding 
         save(sprintf('%s/%s',filepath,name),'Adj')
         save(sprintf('%s/%s',filepath,name2),'C')
-        sprintf('%s',filepath)
+        sprintf('%s: %s/%s',num2str(i),filepath,name)
         
         
         %threshold at some percentage of the matrix
-        thr_num=length(threshold);
-        for j=1:thr_num
-            C = abs(C);
-            [vals, inds] = sort(C(ids)); %sorts from smallest to biggest
-            N = length(ids);
-            N_lim = round(threshold(j)*N/100); %calculate the number of coeff to hold according to the threshold
-            %vals(N_lim)
-            per = vals(end-N_lim); %looks up the value of the thr% of the largest correlations
-            Adj = double(C>per); %Takes only the values larger than previous lines
-            Adj = Adj.*C; %in case I do not want 1s and 0s, but the whole
-            %correlation numbers
-            %Adj = Adj(ids);
-
-            save(sprintf('%s/Adj_%s_%s',filepath,num2str(threshold(j)),name3),'Adj')
-        end
+%         thr_num=length(threshold);
+%         for j=1:thr_num
+%             C = abs(C);
+%             [vals, inds] = sort(C(ids)); %sorts from smallest to biggest
+%             N = length(ids);
+%             N_lim = round(threshold(j)*N/100); %calculate the number of coeff to hold according to the threshold
+%             %vals(N_lim)
+%             per = vals(end-N_lim); %looks up the value of the thr% of the largest correlations
+%             Adj = double(C>per); %Takes only the values larger than previous lines
+%             Adj = Adj.*C; %in case I do not want 1s and 0s, but the whole
+%             %correlation numbers
+%             %Adj = Adj(ids);
+% 
+%             save(sprintf('%s/Adj_%s_%s',filepath,num2str(threshold(j)),name3),'Adj')
+%         end
     end
     clear roi_voxel_data
     clear FD

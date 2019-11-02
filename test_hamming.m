@@ -11,14 +11,14 @@ clc
 
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 
-folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
-%folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
-save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
-%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/UCLA';
+%folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
+folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS';
+%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
+save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/UCLA';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
-parcellation={'Brainnetome','Craddock100','Craddock350'};
-thres='16';
-N=[246,98,329];
+parcellation={'Brainnetome'};%,'Craddock100','Craddock350'};
+thres='12.25';
+N=[246];%,98,329];
 
 % Distance of matrices
 for p=1:size(parcellation,2)
@@ -53,12 +53,13 @@ for p=1:size(parcellation,2)
 
     %Hamming distances
     f=figure;
-    hex=['#003766';'#005399';'#1762A2';'#2E72AB';'#4581B4';'#5C91BE';'#73A1C7';'#8BB0D0';'#A2C0D9';'#B9D0E3';'#D0DFEC';'#FFFFFF']; %#E7EFF5
+    %hex=['#003766';'#005399';'#1762A2';'#2E72AB';'#4581B4';'#5C91BE';'#73A1C7';'#8BB0D0';'#A2C0D9';'#B9D0E3';'#D0DFEC';'#FFFFFF']; %#E7EFF5
+    hex=['#003766';'#1762A2';'#4581B4';'#73A1C7';'#8BB0D0';'#A2C0D9';'#D0DFEC';'#FFFFFF'];
     my_map = sscanf(hex','#%2x%2x%2x',[3,size(hex,1)]).' / 255;
     colormap(my_map)
-    heatmap(smooth,smooth,hamming,'Colormap',my_map,'FontSize',20,'XLabel','Smoothing Kernel','YLabel','Smoothing kernel','CellLabelColor','none')
+    heatmap(smooth,smooth,hamming,'Colormap',my_map,'FontSize',20,'XLabel','Smoothing Kernel','YLabel','Smoothing kernel','CellLabelColor','none','MissingDataColor','#C0C0C0')
     title(sprintf('Similarity matrix for %s',parcellation{p}))
-    %caxis([-0.001,0])
+    caxis([-0.004,0])
     set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
     set(gcf,'color',[1 1 1]);
     

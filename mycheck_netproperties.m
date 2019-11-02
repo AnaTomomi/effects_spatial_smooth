@@ -23,8 +23,8 @@ clc
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 
 pipeline='Forward';
-method='F-test_Fisher_2019';%50-50, Sphere, F-test_Fisher
-folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/NBS';
+method='F-test_Fisher_2019';%'F-test_Fisher_2019';%50-50, Sphere, F-test_Fisher
+folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
 
 d=dir(sprintf('%s/%s',folder,pipeline));
@@ -227,13 +227,13 @@ for i=1:size(smooth,2)
     end
 end
 
-%Simmentric matrix
+%Simmetric matrix
 for i=1:size(smooth,2)
     for j=1:size(smooth,2)
             hamming_mat{i,j} = xor(logical(mat{i}),logical(mat{j}));
             %hamming(i,j)=sum(sum(abs(mat{i}-mat{j})))/(246*245);
             hamming(i,j) = (nnz(xor(logical(mat{i}),logical(mat{j}))))/(246*245);
-    end
+    en
 end
 hamming = hamming.*-1;
 

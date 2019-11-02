@@ -9,8 +9,10 @@ clear all
 close all
 clc
 
-%folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations';
-folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/Permutations';
+folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations';
+%folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/Permutations';
+save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended';
+%save_path='/m/cs/scratch/networks/trianaa1/Paper1/Figures/UCLA';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
 if strcmp(folder,'/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/Permutations')
     n1=22; 
@@ -19,9 +21,9 @@ else
     n1=47;
     n2=47;
 end
-parcellation={'Brainnetome','Craddock30','Craddock100','Craddock350'};
-thr='01';
-N=[246,30,98,329];
+parcellation={'Brainnetome'};%,'Craddock100','Craddock350'};
+thr='007';
+N=[246];%,98,329];
 
 %Load all the F stats and significant links
 for p=1:size(parcellation,2)
@@ -36,7 +38,6 @@ for p=1:size(parcellation,2)
     
     for i=1:length(smooth)
         fprintf('smooth:%s and parcellation:%s \n',smooth{i},parcellation{p})
-        %load(sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations/%s/links_%smm_%s.mat',parcellation{p},smooth{i},thr))
         load(sprintf('%s/%s/weightedlinks_%smm_%s.mat',folder,parcellation{p},smooth{i},thr))
     
         %Extract T-stat and p-val
@@ -123,22 +124,22 @@ for p=1:size(parcellation,2)
         %Plot with colors
         ordered_Cohen = Cohen(order,:);
 
-        hex=['#1c6ff8';'#1c6ff8';'#31db92';'#31db92';'#31db92';'#31db92';'#31db92';'#31db92';'#fef720';'#fef720';'#fef720';'#fef720';'#fef720'];
-        my_map = sscanf(hex','#%2x%2x%2x',[3,size(hex,1)]).' / 255;
-        colormap(my_map)
-        caxis([0,1.3])
+%         hex=['#1c6ff8';'#1c6ff8';'#31db92';'#31db92';'#31db92';'#31db92';'#31db92';'#31db92';'#fef720';'#fef720';'#fef720';'#fef720';'#fef720'];
+%         my_map = sscanf(hex','#%2x%2x%2x',[3,size(hex,1)]).' / 255;
+%         colormap(my_map)
+%         caxis([0,1.3])
 
 
         fig=imagesc(ordered_Cohen(:,3:end));
-        set(fig,'AlphaData',.5*sort_column+.5)
+        set(fig,'AlphaData',.9*sort_column+.5)
         hold on
         x=[0.5 0.5];
-        y=[0 120];
+        y=[0 size(ordered_Cohen,1)+1];
         for i=1:16
             line(x+i,y,'Color','k')
         end
         colorbar
-        caxis([0,1])
+        %caxis([0,1])
         xlabel('Smoothing level FWHM (mm)')
         ylabel('Sample of Links')
         title(sprintf('Effect Size for: %s',parcellation{p}))
@@ -151,5 +152,9 @@ for p=1:size(parcellation,2)
         set(gca, 'FontName', 'Arial')
         set(gcf,'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
         set(gcf,'color',[1 1 1]);
+        
+        saveas(fig,sprintf('%s/weight_%s_aurora_jet.svg',save_path,parcellation{p}),'svg')
+        saveas(fig,sprintf('%s/weight_%s_aurora_jet.eps',save_path,parcellation{p}),'epsc')
     end
+    close all
 end

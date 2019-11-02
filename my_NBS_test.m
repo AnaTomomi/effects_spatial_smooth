@@ -22,7 +22,7 @@ thres=[2.25,4,6.25,9,12.25,16,20.25,25]; %Do NOT change!!!! Range from 1.5 to 5
 
 pipeline='Forward'; %'Forward' or 'Inverse'
 test='F-test';
-N = 246; %number of ROIs
+N = 246; %number of ROIs 246 Brainnetome, 30, 98, 329 Craddock
 
 
 [A,B] = meshgrid(smoothing,thres);
@@ -39,12 +39,12 @@ fprintf('Computing NBS for smooth:%s and thres:%s \n',smoothing,thres)
 %% data format
 
 %Configure the folders and files
-folder1=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group1/Brainnetome_%smm',smoothing);
-folder2=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group2/Brainnetome_%smm',smoothing);
-savepath= sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/NBS_Brainnetome_%smm_F-test_%s_Fisher_2019.mat',smoothing,thres);
+%folder1=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group1/Brainnetome_%smm',smoothing);
+%folder2=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group2/Brainnetome_%smm',smoothing);
+savepath= sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD07/NBS/NBS_sphere_Brainnetome_%smm_F-test_%s_Fisher_2019.mat',smoothing,thres);
 %figure_path=sprintf('/m/cs/scratch/networks/trianaa1/Paper1/Figures/ABIDE_extended/NBS_Brainnetome_%smm_F-test_%s_Fisher',smoothing,thres);
-data_path=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/temp/subjects_%smm_t%s.mat',smoothing,thres);
-design_path=sprintf('/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/design.mat');
+data_path=sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD07/NBS/temp/sphere_brainnetome_%smm.mat',smoothing);
+design_path=sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD07/NBS/design.mat');
 %excel_file='/m/cs/scratch/networks/trianaa1/Paper1/Significant_Nets_Fisher_2019.xlsx';
 
 %Configure the Atlas
@@ -52,43 +52,43 @@ labels='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/NBS/labels.
 centroids=[];
 %centroids='/m/cs/scratch/networks/data/ABIDE_II/Analysis/NBS/Forward/brainnetome.txt';
 
-%% Read the matrices and organize the data
-%Make a list of subjects
-group1= dir(folder1);
-group1= group1(3:end); group1= group1(2:8:end); %OJO! Needs change
-group2= dir(folder2);
-group2= group2(3:end); group2= group2(2:8:end);
-subjectNum_per_group=length(group1);
-
-%Design vector groups that contains indices 1 and 2 for the different groups
-d = [group1; group2]; %list of subjects in the group
-ids = find(triu(ones(N,N),1));
-middle=length(d)/2;
-
-%Organize the data according to NBS guidelines
-for i=1:middle
-    load(sprintf('%s/%s',folder1,d(i).name)) %load each adjacency matrix 
-    Adj=Adj+Adj';
-    %Adj=Adj+diag(ones(1,N));
-    data(:,:,i)=Adj;
-end
- 
-for i=middle+1:length(d)
-    load(sprintf('%s/%s',folder2,d(i).name)) %load each adjacency matrix 
-    Adj=Adj+Adj';
-    %Adj=Adj+diag(ones(1,N)); %This line is commented out because inverse
-    %z-score is performed later. If left, 1 would not be 1 anymore
-    data(:,:,i)=Adj;
-end
-
-%From z-scores to correlations again
-subNum=subjectNum_per_group*2;
-for i=1:subNum
-    data(:,:,i)=tanh(data(:,:,i));
-    data(:,:,i)=data(:,:,i)+diag(ones(1,N));
-end
-
-save(data_path,'data')
+% %% Read the matrices and organize the data
+% %Make a list of subjects
+% group1= dir(folder1);
+% group1= group1(3:end); group1= group1(2:16:end); %OJO! Needs change
+% group2= dir(folder2);
+% group2= group2(3:end); group2= group2(2:16:end);
+% subjectNum_per_group=length(group1);
+% 
+% %Design vector groups that contains indices 1 and 2 for the different groups
+% d = [group1; group2]; %list of subjects in the group
+% ids = find(triu(ones(N,N),1));
+% middle=length(d)/2;
+% 
+% %Organize the data according to NBS guidelines
+% for i=1:middle
+%     load(sprintf('%s/%s',folder1,d(i).name)) %load each adjacency matrix 
+%     Adj=Adj+Adj';
+%     %Adj=Adj+diag(ones(1,N));
+%     data(:,:,i)=Adj;
+% end
+%  
+% for i=middle+1:length(d)
+%     load(sprintf('%s/%s',folder2,d(i).name)) %load each adjacency matrix 
+%     Adj=Adj+Adj';
+%     %Adj=Adj+diag(ones(1,N)); %This line is commented out because inverse
+%     %z-score is performed later. If left, 1 would not be 1 anymore
+%     data(:,:,i)=Adj;
+% end
+% 
+% %From z-scores to correlations again
+% subNum=subjectNum_per_group*2;
+% for i=1:subNum
+%     data(:,:,i)=tanh(data(:,:,i));
+%     data(:,:,i)=data(:,:,i)+diag(ones(1,N));
+% end
+% 
+% save(data_path,'data')
 data= data_path;
 
 % design1=zeros(subNum,1); design1(1:subjectNum_per_group,1)=ones(subjectNum_per_group,1);
@@ -124,6 +124,7 @@ UI.node_label.ui=labels; %labels of Brainnetome
 
 run NBSrun(UI,[])
 global nbs
+
 
 save(savepath,'nbs')
 

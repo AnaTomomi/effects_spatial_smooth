@@ -23,14 +23,22 @@ close all, clear all
 %addpath(genpath('/triton/becs/scratch/braindata/shared/toolboxes/bramila/bramila'));
 addpath(genpath('/m/nbe/scratch/braindata/shared/toolboxes/bramila/bramila'));
 
-addpath('/m/nbe/scratch/nbe/braindata/shared/toolboxes/NIFTI');
+addpath('/m/nbe/scratch/braindata/shared/toolboxes/NIFTI');
 
-folder='/m/cs/scratch/networks/data/ABIDE_II/Forward';
-d= dir(folder); d = d(3:(end-4));
+folder='/m/cs/scratch/networks/data/ABIDE_II/Forward/';
+d= dir(folder); d = d(3:end);
 
 site_d=dir([folder,'/',d(1).name]);
 site_d = site_d(3:end);
 
+fid = fopen('/m/cs/scratch/networks/data/UCLA_openneuro/subjects_FD08.txt','r');
+Data=textscan(fid, '%s', 'delimiter', '\n', 'whitespace', '');
+subject_list  = Data{1};
+fclose(fid);
+
+% for count=1:size(subject_list,1)
+%     subjects{count,1} = sprintf('%s/%s',folder,subject_list{count});
+% end
 count=1; sub=1;
 smoothing=d(sub).name;
 %for sub=1:length(d)
@@ -60,8 +68,9 @@ include_subcortex = true;
 include_cerebellum = true;
 atlas = 'craddock'; % which atlas to use for producing the group masks, options: 'aal', 'ho', 'brainnetome'
 roi_number = '350'; %change to match the number of ROIs used in craddock
+smoothing = '0';
 
-missing_rois = [43 173 188 214 220 230 235 267 271 275 280 295 307 322 325 326 330 335 336 350];%[120 123]; % indices of ROIs that are not present at the selected probability; needed to get correct labels
+missing_rois = []; %[25 43 173 188 214 220 230 235 267 271 275 280 295 307 322 325 326 330 335 336 350];%[120 123]; % indices of ROIs that are not present at the selected probability; needed to get correct labels
 %% reading individual masks, creating group mask
 
 if strcmp(atlas, 'ho')
@@ -334,8 +343,8 @@ end
 
 load(mask_name);
 labels = cell(n_rois, 1); 
-for i = 1:n_rois
-    labels(i) = {rois(unique_roi_indices(i)).label};
+for i = 1:n_rois+1
+    labels(i) = {rois(unique_roi_indices(i)).label}; %
 end
 
 cfg.labels=labels;
