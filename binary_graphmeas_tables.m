@@ -16,10 +16,10 @@ addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/Violinplot-Matlab'))
 addpath(genpath('/m/cs/scratch/networks/trianaa1/toolboxes/BCT'));
 addpath(genpath('/m/cs/scratch/networks/trianaa1/Paper1'))
 
-folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations';
-%folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/Permutations';
-excel_path='/m/cs/scratch/networks/trianaa1/Paper1/ABIDE_extended_files/binary_graphmeas_Craddock350.xlsx';
-%excel_path='/m/cs/scratch/networks/trianaa1/Paper1/UCLA_files/binary_graphmeas.xlsx';
+%folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/Permutations';
+folder='/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/Permutations';
+%excel_path='/m/cs/scratch/networks/trianaa1/Paper1/ABIDE_extended_files/binary_graphmeas_Craddock350.xlsx';
+excel_path='/m/cs/scratch/networks/trianaa1/Paper1/UCLA_files/binary_graphmeas_Brainnetome.xlsx';
 smooth={'0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32'};
 meas = {'DegStat', 'BetwStat','ClusStat','EglobStat','ElocStat','meanClusStat'};
 thresholds={'005' '007' '009' '01' '011' '013' '015' '017' '019' '02'};
