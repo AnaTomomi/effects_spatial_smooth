@@ -18,7 +18,7 @@ import shutil
 
 folder='/m/cs/scratch/networks/data/ABIDE_II/Forward/'
 smoothing='Brainnetome_28mm/'
-matrix='Adj_NoThr_Craddock30.mat'
+matrix='Adj_NoThr_Craddock100.mat'
 #matrix='Adjacency_10.mat'
 Thr='Thr0/'
 output_folder='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/'
