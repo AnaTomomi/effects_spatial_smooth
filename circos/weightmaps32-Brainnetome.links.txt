@@ -1,0 +1,17 @@
+r MFG_7_1 l ITG_7_2 0 0.7
+l PrG_6_1 r PhG_6_1 0 0.7
+l PrG_6_5 r PhG_6_1 0 0.7
+r ITG_7_1 l PhG_6_4 0 0.7
+l IFG_6_2 l PhG_6_5 0 0.7
+l IFG_6_2 r PhG_6_5 0 0.7
+r PhG_6_3 r SPL_5_1 0 0.7
+l ITG_7_3 r SPL_5_5 0 0.7
+l PoG_4_1 r Cun_5_4 0 0.7
+l IFG_6_3 l Amyg_2_1 0 0.7
+r FuG_3_1 l Hipp_2_2 0 0.7
+r INS_6_1 l Str_6_1 0 0.7
+r FuG_3_3 l Str_6_2 0 0.7
+r ITG_7_3 r Str_6_3 0 0.7
+l INS_6_3 l Str_6_6 0 0.7
+r FuG_3_3 r Tha_8_1 0 0.7
+r FuG_3_3 l Tha_8_5 0 0.7

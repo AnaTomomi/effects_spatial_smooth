@@ -1,0 +1,2 @@
+r roi_10 r roi_48 0 0.7
+r roi_22 r roi_90 0 0.7

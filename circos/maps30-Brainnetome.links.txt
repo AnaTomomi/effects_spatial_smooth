@@ -1,0 +1,16 @@
+r PCL_2_2 l Str_6_5 0 0.7
+r SFG_7_5 l Tha_8_1 0 0.7
+r PrG_6_4 l Tha_8_1 0 0.7
+r PCL_2_2 l Tha_8_1 0 0.7
+r SFG_7_5 r Tha_8_1 0 0.7
+r PrG_6_4 r Tha_8_1 0 0.7
+r PCL_2_2 r Tha_8_1 0 0.7
+l PoG_4_1 r Tha_8_1 0 0.7
+r SFG_7_5 l Tha_8_4 0 0.7
+r PrG_6_4 l Tha_8_4 0 0.7
+r PCL_2_2 l Tha_8_4 0 0.7
+r SFG_7_5 r Tha_8_4 0 0.7
+r PCL_2_2 r Tha_8_4 0 0.7
+l PoG_4_1 r Tha_8_4 0 0.7
+r PrG_6_4 l Tha_8_8 0 0.7
+r PCL_2_2 l Tha_8_8 0 0.7

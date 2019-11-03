@@ -1,0 +1,5 @@
+r roi_29 r roi_36 0 0.7
+r roi_12 r roi_52 0 0.7
+r roi_7 r roi_80 0 0.7
+r roi_53 r roi_80 0 0.7
+r roi_19 r roi_89 0 0.7

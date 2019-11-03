@@ -1,4 +1,9 @@
-This tutorial demonstrates how to create cortical network images, modeled after examples in
+This code is based on the Tutorial #19 http://circos.ca/documentation/tutorials/recipes/cortical_maps/
+The cortical maps and connectivity .txt are modified, but the parsemap script is used. 
+
+The files in this folder replicate the circos plots for the ABIDE dataset, Brainnetome parcellation. Other parcellations and UCLA dataset, see the subfolders.
+
+The tutorial has been previously used in:
 
 Irimia, A., M. C. Chambers, et al. (2012). "Circular representation of human cortical networks for subject and population-level connectomic visualization." NeuroImage.
 
