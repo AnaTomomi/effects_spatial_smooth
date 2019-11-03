@@ -1,9 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This script computes the mean FD for all the sequence for a group of    5
-% subjects. It also organizes the ABIDE information and codes the site    %
+% subjects. It also organizes the UCLA information and codes the site    %
 % from which each subject was scanned. The script writes the information  %
 % in csv format, intented to be used as input for data regression.        %
-% Created 16.07.2018 by AT.                                               %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
