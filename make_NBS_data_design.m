@@ -6,14 +6,14 @@ smooth=[0,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32];
 
 pipeline='Forward'; %'Forward' or 'Inverse'
 test='F-test';
-N = 30; %number of ROIs 246 Brainnetome, 30, 98, 329 Craddock
+N = 100; %number of ROIs 246 Brainnetome, 30, 98, 329 Craddock
 
 
 for s=1:16
     smoothing=num2str(smooth(s));
     folder1=sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/group1/Brainnetome_%smm',smoothing);
     folder2=sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/group2/Brainnetome_%smm',smoothing);
-    data_path=sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS/temp/sphere_craddock30_%smm.mat',smoothing);
+    data_path=sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS/temp/sphere_craddock100_%smm.mat',smoothing);
     design_path=sprintf('/m/cs/scratch/networks/data/UCLA_openneuro/Analysis/FD05/NBS/design.mat');
     
     group1= dir(folder1);
