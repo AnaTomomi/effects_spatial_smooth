@@ -168,6 +168,10 @@ def get_regressionMat(filepath,subKeys):
     site2=[]
     site3=[]
     site4=[]
+    site5=[]
+    site6=[]
+    site7=[]
+    site8=[]
     fd=[]  
     with open(filepath, 'rb') as csv_file:
         reader = csv.reader(csv_file)
@@ -177,7 +181,11 @@ def get_regressionMat(filepath,subKeys):
             site2.append(float(row[2]))
             site3.append(float(row[3]))
             site4.append(float(row[4]))
-            fd.append(float(row[5]))
+            site5.append(float(row[5]))
+            site6.append(float(row[6]))
+            site7.append(float(row[7]))
+            site8.append(float(row[8]))
+            fd.append(float(row[9]))
     regress2=[site1,site2,site3,site4,fd]
     regress2=np.transpose(np.asarray(regress2)) 
     
