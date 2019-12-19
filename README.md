@@ -33,10 +33,11 @@ To preprocess the files, you need to have two files for each subject: rs-fMRI (E
 4. Create the group masks by running my_make_ind_mask.m (start_from_epi=1)
 5. Average the ROI time-series. You may use the script pick_and_save_voxel_ts_wrapper.m for this purpose.
 6. Create the adjacency matrices using the script mycalculate_adjacency.m
-7. Regress possible effects due to the place where the subjects were scanned and their mean framewise displacement (MFD). The MFD is calculated with the script MFD_calculation.m. Use regress_data.py for the regression.
-8. Organize the subjects according to the groups where each belongs. The script Organize-Subjects.py will help with that. 
+7. Organize the subjects according to the groups where each belongs. The script Organize-Subjects.py will help with that.
+8. Regress possible effects due to the place where the subjects were scanned and their mean framewise displacement (MFD). The MFD is calculated with the script MFD_calculation.m. Use regress_data.py for the regression.
+ 
 
-If you want to run the analysis with spheres of fixed radios as ROIs, you need to create the spheres first. The script mymake_sphere.m creates such spheres and the script my_correct_origin.m helps to translate the coordinates to the right format. 
+If you want to run the analysis with spheres of fixed radios as ROIs, you need to create the spheres first. The script mymake_sphere.m creates such spheres and the script my_correct_origin.m helps to translate the coordinates to the right format. After creating the spheres, re-run from step 4.
 
 ## Analysis
 ### Files
@@ -44,8 +45,9 @@ If you want to run the analysis with spheres of fixed radios as ROIs, you need t
 - my_slurm_permutations.m
 - run_slurm_permutations.sh
 - my_NBS_test.m
+- my_NBS_test.sh
 
-The main file is my_NBS_test.m, which runs the Networks-based statistic for comparing two groups at a level of smoothing. Check the paths and run it. This will create an excel file with the results. 
+The main file is my_NBS_test.m, which runs the Networks-based statistic for comparing two groups at a level of smoothing. Check the paths and run it. This will save the results is .mat format. For speed-up performance, use my_NBS_test.sh. If you want to run NBS, you need to create the data structures first. You may use the file make_NBS_data_design.m
 If you want to run the analysis for the thresholded networks, then you need to modify the file my_slurm_permutations.m with the right paths and run the file run_slurm_permutations.sh
 
 ## Visualization
