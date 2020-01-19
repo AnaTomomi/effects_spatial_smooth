@@ -1,0 +1,1 @@
+There are 6 files in this folder. These files contain the p-values for the graph measurement analysis. The names are given according to the structure "binary_graphmeas_DATABASE_Parcellation_method.xlsx", e.g. binary_graphmeas_ABIDE_Brainnetome refers to the results for the ABIDE dataset using the Brainnetome parcellation with the standard method (no mention of it).
