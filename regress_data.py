@@ -101,7 +101,7 @@ def read_all_subjects(Smoothing, folder_g1,kind):
             fname=file
             adjMat=load_adj_matrix_from_mat(folder+fname) #this is a numpy object, so call adjMat[0,0]. 
             #Now the matrices use the python indexing
-            group[fname[:-33]]=np.arctanh(adjMat) #normally -14
+            group[fname[:-26]]=np.arctanh(adjMat) #normally -14
             #Fisher transform #change to -17 when working with thresholded matrices!!!!
             #Change to -26 for Nonthresholded 
         smooth1[smooth]=group
@@ -186,7 +186,7 @@ def get_regressionMat(filepath,subKeys):
             site7.append(float(row[7]))
             site8.append(float(row[8]))
             fd.append(float(row[9]))
-    regress2=[site1,site2,site3,site4,fd]
+    regress2=[site1,site2,site3,site4,site5,site6,site7,site8,fd]
     regress2=np.transpose(np.asarray(regress2)) 
     
     #Organize according to keys
@@ -287,17 +287,17 @@ def links_to_Mat(Smoothing,link_dist,length,subKeys):
     
 if __name__ == "__main__":
     #state all folders and configurations needed
-    folder_g1='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group1/'#ASD
-    folder_g2='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group2/'#TC
-    filepath_g1='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group1/regress.csv' #Filepath for the regression matrix file 
+    folder_g1='/m/cs/scratch/networks-brain/ABIDE_II/Analysis/group1/'#ASD
+    folder_g2='/m/cs/scratch/networks-brain/ABIDE_II/Analysis/group2/'#TC
+    filepath_g1='/m/cs/scratch/networks/data//ABIDE_II/Analysis/ABIDE_extended/group1/regress.csv' #Filepath for the regression matrix file 
     #This regression matrix file should contain in order the following columns: subject_ID (str), belong to site I (bool)
     #belong to site II (bool), belong to site III (bool), belong to site IV (bool), mean framewise displacement.
     filepath_g2='/m/cs/scratch/networks/data/ABIDE_II/Analysis/ABIDE_extended/group2/regress.csv'
-    suffix='-Adj_NoThr_sphere_Brainnetome_reg' #name of the suffix of the files to write
-    kind='_NoThr_sphere_Brainnetome.mat' # '_NoThr.mat', '_NoThr_reg.mat', or '_sphere.mat' suffix of the files to read
+    suffix='-Adj_NoThr_Brainnetome_reg' #name of the suffix of the files to write
+    kind='_NoThr_Brainnetome.mat' # '_NoThr.mat', '_NoThr_reg.mat', or '_sphere.mat' suffix of the files to read
     
-    Smoothing=['0','4','6','8','10','12','14','16','18','20','22','24','26','28','30','32']
-    #Smoothing=['0']
+    #Smoothing=['4','6','8','10','12','14','16','18','20','22','24','26','28','30','32']
+    Smoothing=['34']
     Smoothing=['Brainnetome_'+s+'mm/' for s in Smoothing]
     length=246 #number of ROIs
     
@@ -315,7 +315,7 @@ if __name__ == "__main__":
     regSmooth1=links_to_Mat(Smoothing,link_dist1,length,subKeys1)
     regSmooth2=links_to_Mat(Smoothing,link_dist2,length,subKeys2)
     
-    #save regressed matrices
+    '''#save regressed matrices
     for smooth in Smoothing:
         subjects=regSmooth1[smooth].keys()
         for idx,subject in enumerate(subjects):
@@ -324,4 +324,4 @@ if __name__ == "__main__":
     for smooth in Smoothing:
         subjects=regSmooth2[smooth].keys()
         for idx,subject in enumerate(subjects):
-            scipy.io.savemat(folder_g2+smooth+'/'+subject+suffix,{'Adj':regSmooth2[smooth][subject]})
+            scipy.io.savemat(folder_g2+smooth+'/'+subject+suffix,{'Adj':regSmooth2[smooth][subject]})'''
