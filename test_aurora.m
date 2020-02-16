@@ -107,7 +107,7 @@ for p=1:size(parcellation,2)
         sdl=prevalence;
         sdl(:,17)=sum(prevalence,2);
         [sort_sdl, order_sdl]=sortrows(sdl,17,'descend');
-        rownames_sdl=rownames(order_sdl);
+        rownames_sdl=link_name(order_sdl);
 
         %Plot with colors
         ordered_Cohen = Cohen(order,:);
