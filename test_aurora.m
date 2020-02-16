@@ -102,6 +102,12 @@ for p=1:size(parcellation,2)
     %     heatmap(smooth,rownames,sort_column,'Colormap',gray,'FontSize',7,'XLabel','Smoothing Kernel','YLabel','Links')
     % 
     %     %Link orders are fine!
+    
+        %Which links are significantly different?
+        sdl=prevalence;
+        sdl(:,17)=sum(prevalence,2);
+        [sort_sdl, order_sdl]=sortrows(sdl,17,'descend');
+        rownames_sdl=rownames(order_sdl);
 
         %Plot with colors
         ordered_Cohen = Cohen(order,:);
